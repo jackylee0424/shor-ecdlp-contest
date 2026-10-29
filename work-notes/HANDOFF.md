@@ -20,7 +20,8 @@ _Last updated: 2026-10-29 by Codex (Brief 08 accepted: uniform p≥0.546, six ro
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 09: dirty comparator, then 310 correction loans | workspace/DirtyMCX.lean; compact correction modules |
+| Codex | 2026-10-29 | Brief 10: flag-only endpoint correction, target 855 qubits | workspace flag-correction proofs; Entrant four-file package if accepted |
+| Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 
 ## Next up (unclaimed)
 

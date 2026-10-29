@@ -4,11 +4,15 @@
 Run from the lab after port_upstream.py --rounds 6, before package_streaming.py.
 The scratch proof is combined from lab files; only Entrant/ is changed in bench.
 """
+import argparse
 from pathlib import Path
 import subprocess
 
 lab = Path(__file__).resolve().parent.parent
-bench = Path.home() / 'shorecdlp'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--bench', type=Path, default=Path.home() / 'shorecdlp')
+args = parser.parse_args()
+bench = args.bench
 target = bench / 'ShorECDLP/Submission/Entrant/Streaming'
 subprocess.run(['python3', str(lab / 'workspace/acceptance_check.py')], cwd=lab, check=True)
 contribution = target / 'Contributions/UniformAcceptance.lean'
