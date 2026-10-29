@@ -67,3 +67,10 @@ logs/                tool output (gitignored)
 - Write down dead ends with the reason; they are as valuable as wins.
 - Long builds: run them in the background and log to `logs/`. Record wall times in notes so others can plan.
 - Never delete another agent's snapshot or notes. Supersede them and say so.
+
+## Stack workflow (since 2026-10-29)
+
+Our contributions are **patches in `stack/NN-slug/`** (see `stack/README.md`), applied in order on top of whatever the leaderboard leader is.
+`formal-tools/restack.sh` rebuilds the whole stack on a new leader commit (default checkout `~/shorecdlp-c`) and reports the cut and the >10 % verdict.
+`formal-tools/watch-leader.sh <best>` polls the leaderboard. Builders own one checkout each (`~/shorecdlp`, `~/shorecdlp-m`, ...). We submit only a
+stack more than 10 % below the leader at submission time.
