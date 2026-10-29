@@ -20,6 +20,7 @@ _Last updated: 2026-10-29 by Codex (Brief 10 stopped at exact measured-comparato
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 
 ## Next up (unclaimed)

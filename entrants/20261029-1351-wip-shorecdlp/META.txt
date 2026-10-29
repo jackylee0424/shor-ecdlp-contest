@@ -1,0 +1,1 @@
+name: wip-shorecdlp\nnote: stopped mid-build (frontier moved to 855q ff1bf8d)

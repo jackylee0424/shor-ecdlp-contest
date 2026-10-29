@@ -1,0 +1,4 @@
+name: frontier-ff1bf8d
+date: 2026-10-29T13:55:02-07:00
+bench_commit: 93051d2c5d496cb60efeb6c9c3fd0756b0f052cd
+note: leaderboard best (e-man07 ff1bf8d, combines ArthurOstapenko c4cfd7c + 69a9e23); local accepted 73735059805650

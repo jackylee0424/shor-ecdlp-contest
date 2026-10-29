@@ -466,33 +466,20 @@ def ported_modules(bench_root: Path) -> None:
     )
     begin = text.index("theorem batchedWindowCore_wellFormed")
     end = text.index("attribute [local irreducible] batchedWindowCore", begin)
-    replacement = '''private theorem sequenceFour_wellFormed {n : Nat}
-    (a b d : FixedSegment n)
-    (c : (start : Nat) → Straight n start (start + 458738))
-    (ha : ∀ start, (a start).2.WellFormed)
-    (hb : ∀ start, (b start).2.WellFormed)
-    (hc : ∀ start, (c start).WellFormed)
-    (hd : ∀ start, (d start).2.WellFormed) (start : Nat) :
-    (sequenceProgram n
-      (a :: b :: (fun cursor => ⟨458738, c cursor⟩) :: d :: List.nil) start).2.WellFormed := by
-  apply sequenceProgram_wellFormed
-  intro p hp cursor
-  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-  rcases hp with rfl | rfl | rfl | rfl
-  · exact ha cursor
-  · exact hb cursor
-  · simpa only using hc cursor
-  · exact hd cursor
-
-set_option maxRecDepth 10000 in
-theorem batchedWindowCore_wellFormed (w : OddWindow) (start : Nat) :
+    replacement = '''theorem batchedWindowCore_wellFormed (w : OddWindow) (start : Nat) :
     (batchedWindowCore w start).2.WellFormed := by
   rw [batchedWindowCore_eq]
-  exact sequenceFour_wellFormed (a := sharedCoordinateProgram w)
-    (b := sharedYNegateProgram w) (c := placedBatchStraight w)
-    (d := sharedYNegateProgram w) (sharedCoordinateProgram_wellFormed w)
-    (sharedYNegateProgram_wellFormed w) (placedBatchStraight_wellFormed w)
-    (sharedYNegateProgram_wellFormed w) start
+  dsimp only
+  simp only [sequenceProgram]
+  apply appendCompiled_wellFormed
+  · exact sharedCoordinateProgram_wellFormed w start
+  · apply appendCompiled_wellFormed
+    · exact sharedYNegateProgram_wellFormed w _
+    · apply appendCompiled_wellFormed
+      · apply placedBatchStraight_wellFormed
+      · apply appendCompiled_wellFormed
+        · exact sharedYNegateProgram_wellFormed w _
+        · trivial
 
 '''
     text = text[:begin] + replacement + text[end:]
