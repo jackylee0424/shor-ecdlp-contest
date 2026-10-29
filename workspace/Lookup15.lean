@@ -1,8 +1,5 @@
 import ShorECDLP.Submission.Entrant.Main
 
-set_option maxHeartbeats 4000000
-set_option maxRecDepth 4096
-
 namespace ShorECDLP.Entrant.Lookup15Scratch
 
 open ShorECDLP Classical Quantum ShorECDLP.Challenge ShorECDLP.Secp256k1
