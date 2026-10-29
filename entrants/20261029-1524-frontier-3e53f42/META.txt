@@ -1,0 +1,4 @@
+name: frontier-3e53f42
+date: 2026-10-29T15:24:21-07:00
+bench_commit: 8513c15e9d9cfed9b2000c5047dc40ef3280643b
+note: leader dadon 3e53f42 (single trial 263/263, EEA literal cancellation); local accepted

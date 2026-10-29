@@ -3,10 +3,9 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain": the current leader **e-man07 `ff1bf8d`: 855 × 86,239,836,030 = 73,735,059,805,650** (6 rounds, 28 addition windows/round,
-14,373,306,005 T/round). Reproduced locally: `entrants/20261029-1355-frontier-ff1bf8d`.
-Composition of T/round: EEA wrappers 12,473,451,760 (86.8 %), Horner multiply 1,305,986,808 (9.1 %), square/subtract 435,880,284 (3.0 %),
-QROM/lookup ~64M (0.45 %), correction (~3.07M/window, ~0.6 %), Fourier 54,168.
+Baseline for "gain" (updated 2026-10-29 15:24): leader **dadon `3e53f42` (bench `8513c15`): 855 × 16,901,720,498 = 14,450,971,025,790**, a **single trial** at 263/263 bits with the `nearestPair` decoder (1 direct load + 33 corrected windows), with verified EEA literal cancellation. Reproduced locally: `entrants/20261029-1524-frontier-3e53f42`. **Submission bar (> 10 %): Q×T < 13,005,873,923,211.** Each window ≈ 2.9 % of T; EEA ≈ 87 % of each window.
+
+Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
 Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 
@@ -16,7 +15,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 |---|---|---|---|---|
 | A1 | 56 → 26 rounds (fit the measurement cap) | — | **done (also by others)** | us: brief 04; `streaming26` |
 | A2 | Averaged / uniform per-round acceptance → 6 rounds | — | **done (also by others)** | us: brief 08 (546/1000); ArthurOstapenko `69a9e23` (27/50). The leader uses it |
-| A3 | 5 rounds: prove per-round ≥ 0.6019 | −16.7 % (≈ 6.14e13) | **open, high risk** | none. Proved bounds are ~0.54–0.55 and sampled values ~0.60–0.63 (`workspace/round_mass.py`). Needs a sharper uniform analysis; the polynomial + `uv ≥ u+v−1` route caps near 0.547 |
+| A3 | 5 rounds: prove per-round ≥ 0.6019 (**moot**: the leader is single-trial) | −16.7 % (≈ 6.14e13) | **open, high risk** | none. Proved bounds are ~0.54–0.55 and sampled values ~0.60–0.63 (`workspace/round_mass.py`). Needs a sharper uniform analysis; the polynomial + `uv ≥ u+v−1` route caps near 0.547 |
 | A4 | Raise per-round mass by changing decoder bits (rightBits) | ~0 | **dead** | `docs/CONTRIBUTIONS-PLAN.md` §2: precision doesn't change the uniform bound |
 
 ## B. Qubits (core is 855: 854 reset labels + zero-divisor flag 837)
@@ -37,7 +36,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 |---|---|---|---|---|
 | C1 | EEA exact inventory | — | **done** | brief 12: `docs/EEA-INVENTORY.md`, `workspace/eea_inventory.py` (445,480,420 T/window reproduced) |
 | C2 | Re-apply measured AND erasure inside EEA | 0 | **dead** | already present: 6,961,844 erasures/wrapper (`docs/EEA-INVENTORY.md`) |
-| C3 | Block-E middle cleanup (2 CCX/microstep) | −0.018 % → 73,722,028,784,850 | **in flight** | brief 12 phase 2 (Codex Daybreak, `~/shorecdlp`) |
+| C3 | Block-E middle cleanup (2 CCX/microstep); **overlaps dadon's verified literal cancellation (−714 T/microstep, done by others)**; brief 12 stopped, WIP `entrants/20261029-1518-wip-brief12` | −0.018 % → 73,722,028,784,850 | **in flight** | brief 12 phase 2 (Codex Daybreak, `~/shorecdlp`) |
 | C4 | Block-E held product (4 CCX/microstep) | −0.035 % → 73,708,997,764,050 | **in flight (after C3)** | brief 12 |
 | C5 | Phase-only comparisons in EEA | 0 established | **open, L** | brief 12 found no compare whose value isn't consumed later |
 | C6 | Schedule/constant-control specialization | 0 | **dead** | already literal in source |
@@ -51,6 +50,15 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | C10 | Gold exact cells → Straight compiler (M0–M4) | enables C7–C9 | **open, weeks–months** | `docs/ECDLP-AI-GOLD.md` |
 | C11 | Cancel the adjacent sign-negation pair | ~−0.008 % | **open, S/M** | `docs/CONTRIBUTIONS-PLAN.md` rank 5; may already differ in the leader's correction |
 | C12 | Correction: exact 13-query / 1,276-CCX flag design vs leader's XOR correction | ~−0.003 % | **parked** | our WIP `workspace/flag855-wip/`; tiny |
+
+## E. Single-trial levers (new baseline)
+
+| # | Lever | Gain | Status | Owner / evidence |
+|---|---|---|---|---|
+| E1 | Asymmetric axis widths with the `wrappedShift` decoder (right axis ≈ 203–210 bits under the 2^55.8 candidate budget) | up to ≈ 3–4 windows ≈ −9 to −12 % | **in flight: analysis** | brief 14b → `docs/FEWER-WINDOWS.md` |
+| E2 | Sharper nearestPair success lemma (t < 263) | only counts once a whole window drops | **in flight: analysis** | brief 14b |
+| E3 | Window-width re-packing under the 983,040-row cap | window count vs rows | **in flight: analysis** | brief 14b |
+| E4 | Verified generic gate cancellation over more literal blocks (extend dadon's pass beyond the 7 EEA literals) | unpriced | **open** | dadon `3e53f42` note: cancellation procedure proved correct for X/CX/CCX |
 
 ## D. Process
 

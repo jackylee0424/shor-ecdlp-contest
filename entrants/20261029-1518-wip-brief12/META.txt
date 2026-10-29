@@ -1,0 +1,2 @@
+name: wip-brief12
+note: Block-E rewrite on 6-round base; stopped when baseline moved to single-trial

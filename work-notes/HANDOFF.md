@@ -24,6 +24,7 @@ _Last updated: 2026-10-29 by Codex (Brief 13 stopped at C8 clean-lane feasibilit
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
+| Codex | 2026-10-29 | Brief 14: full decoder accepted-set mass and five-round feasibility (read-only benches) | `docs/FIVE-ROUND.md`; `workspace/five_round_mass.py` |
 
 ## Next up (unclaimed)
 
