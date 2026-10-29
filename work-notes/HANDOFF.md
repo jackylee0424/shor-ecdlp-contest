@@ -1,11 +1,12 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 10 stopped at exact measured-comparator seam; rounds6 restored)._
+_Last updated: 2026-10-29 by Codex (Brief 13 stopped at C8 clean-lane feasibility gate; `shorecdlp-m` untouched)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
+| frontier ff1bf8d | 855 | 86,239,836,030 | **73,735,059,805,650** | frontier commit `93051d2`; reproduced before Brief 13 |
 | rounds6 (current bench Entrant) | 3,932 | 86,360,247,846 | **339,568,494,530,472** | official benchmark accepted, full kernel replay, 217s; `entrants/20261029-1215-rounds6` |
 | streaming26 (previous accepted entrant) | 3,932 | 374,227,740,666 | **1,471,463,476,298,712** | official benchmark accepted, full kernel replay, 232s; `entrants/20261029-1149-streaming26` |
 | shipped Entrant (bench HEAD 535a493) | 206,642 | 355,060,161,799,520 | 73,370,341,954,576,411,840 (≈7.34e19) | `yukon run` accepted 2026-10-29 (snapshot `entrants/20261029-1111-baseline`) |
@@ -23,9 +24,21 @@ _Last updated: 2026-10-29 by Codex (Brief 10 stopped at exact measured-comparato
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
-| Codex | 2026-10-29 | Brief 13: exact fast modular multiplier feasibility and, if viable, integration on frontier ff1bf8d | `docs/MUL-PLAN.md`; `workspace/Mul*.lean`; `workspace/mul_*.py`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 
 ## Next up (unclaimed)
+
+- Brief 13 stopped at its mandatory feasibility gate. Three of the eight replacement sites
+  (`division multiply-to-work`, `multiplication recompute`, `multiplication unrecompute`) expose
+  only **25** proved-clean lanes outside the destination after the forward EEA; ordinary multiply
+  sites have 68 and square sites 69. The requested modp_ft-style cell needs about 70 (the donor's
+  direct fused table is 74 pool lanes plus a flag). Kernel-checked inventory:
+  `workspace/MulClean.lean`; exact projections: `workspace/mul_feasibility.py`; full analysis:
+  `docs/MUL-PLAN.md` and `work-notes/experiments/2026-10-29-mul.md`. Reopen C8 only with a
+  ≤25-clean-lane exact cell, dirty-borrowed restoration, or an EEA/layout change freeing ≥45
+  lanes at unchanged support. At 855 Q the strict policy envelope is ≤757 CCX/bit with at most
+  76 fixed CCX/call; 758 CCX/bit misses by 1,447,278,165 score. Adding 45 qubits fails even if
+  all eight calls become free. `/home/gitzard/shorecdlp-m` remains clean at `93051d2`; no build,
+  score, snapshot, submission, push or commit.
 
 - Brief 10 flag855 WIP is preserved in `workspace/flag855-wip/`; full findings are in
   `work-notes/experiments/2026-10-29-flag855.md`. Endpoint logic, pure flag action, concrete

@@ -1,4 +1,4 @@
-import ShorECDLP.Submission.«2607_13816».Challenge.IndexedStep
+import ShorECDLP.Submission.«2607_13816».Challenge.MeasuredStep
 
 namespace ShorECDLP.Paper2607_13816.ChallengeMigration
 open Quantum ShorECDLP.Challenge
@@ -186,6 +186,40 @@ def optimizedCoefficientProgram (n start T : Nat) :
     (count : Nat) × Straight n start (start+count) :=
   sequenceProgram n (optimizedCoefficientSegments n T) start
 
+def optimizedCoefficientAdaptive (T : Nat) : AdaptiveCircuit :=
+  let r := indexedStepProductionRegisters
+  let w := (certifiedActiveWindows 256 T).coefficient
+  sequenceCircuit [
+    .unitary (cancelBoundaryCCX productionEPrefix) .done,
+    coefficientPrefixAdaptive (r.coefficient w) w.start w.stop .sub false .work2,
+    .unitary productionEMiddle .done,
+    coefficientPrefixAdaptive (r.coefficient w) w.start w.stop .add true .work2,
+    .unitary (cancelBoundaryCCX productionESuffix) .done]
+
+theorem optimizedCoefficientProgram_run_source (n start T : Nat)
+    (read : ConstantBit n → Bool) (history : Fin start → Bool) :
+    compiledRun (optimizedCoefficientProgram n start T) read history =
+      (optimizedCoefficientAdaptive T).run := by
+  unfold optimizedCoefficientProgram optimizedCoefficientAdaptive
+  apply sequenceProgram_run
+  unfold optimizedCoefficientSegments
+  dsimp only
+  refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_
+    (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ List.Forall₂.nil))))
+  · intro cursor hist
+    simp only [optimizedEPrefixSegment, compiledRun]
+    exact literalProgram_run _ read hist
+  · intro cursor hist
+    exact coefficientProgram_run n cursor _ _ _ .sub false .work2 read hist
+  · intro cursor hist
+    simp only [optimizedEMiddleSegment, compiledRun]
+    exact literalProgram_run _ read hist
+  · intro cursor hist
+    exact coefficientProgram_run n cursor _ _ _ .add true .work2 read hist
+  · intro cursor hist
+    simp only [optimizedESuffixSegment, compiledRun]
+    exact literalProgram_run _ read hist
+
 theorem optimizedCoefficientProgram_run (n start T : Nat)
     (read : ConstantBit n → Bool) (history : Fin start → Bool) :
     compiledRun (optimizedCoefficientProgram n start T) read history =
@@ -223,6 +257,13 @@ theorem optimizedCoefficientProgram_run (n start T : Nat)
       exact ⟨computeControl_wellFormed _ _ _ _ indexedStepProduction_layout.coefficientAdd,
         restoreLatestPaperTBoundary_wellFormed _ 256 indexedStepProduction_layout.tBoundary⟩)
 
+theorem optimizedCoefficientAdaptive_run (T : Nat) :
+    (optimizedCoefficientAdaptive T).run =
+      (blockEAdaptive indexedStepProductionRegisters 256
+        (certifiedActiveWindows 256 T).coefficient).run := by
+  rw [← optimizedCoefficientProgram_run_source 1 0 T (fun _ ↦ false) Fin.elim0]
+  exact optimizedCoefficientProgram_run 1 0 T (fun _ ↦ false) Fin.elim0
+
 theorem productionCoefficientBlockSources (T : Nat) :
     coefficientBlockSources indexedStepProductionRegisters 256
       (certifiedActiveWindows 256 T).coefficient = [
@@ -244,6 +285,72 @@ theorem productionCoefficientBlockSources (T : Nat) :
 attribute [local irreducible] productionEPrefix productionEMiddle productionESuffix
   cancelBoundaryCCX
 
+theorem optimizedCoefficientProgram_tCount_formula (n start T : Nat)
+    (read : ConstantBit n → Bool) (history : Fin start → Bool) :
+    compiledTCount (optimizedCoefficientProgram n start T) read history =
+      (sequenceCircuit ([
+        .unitary (cancelBoundaryCCX productionEPrefix) .done,
+        coefficientPrefixAdaptive
+          (indexedStepProductionRegisters.coefficient
+            (certifiedActiveWindows 256 T).coefficient)
+          (certifiedActiveWindows 256 T).coefficient.start
+          (certifiedActiveWindows 256 T).coefficient.stop .sub false .work2,
+        .unitary productionEMiddle .done,
+        coefficientPrefixAdaptive
+          (indexedStepProductionRegisters.coefficient
+            (certifiedActiveWindows 256 T).coefficient)
+          (certifiedActiveWindows 256 T).coefficient.start
+          (certifiedActiveWindows 256 T).coefficient.stop .add true .work2,
+        .unitary (cancelBoundaryCCX productionESuffix) .done] : List AdaptiveCircuit)).tCount := by
+  unfold optimizedCoefficientProgram
+  apply sequenceProgram_tCount
+  unfold optimizedCoefficientSegments
+  dsimp only
+  refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_
+    (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ List.Forall₂.nil))))
+  · intro cursor hist
+    simp only [optimizedEPrefixSegment, compiledTCount]
+    exact literalProgram_tCount _ read hist
+  · intro cursor hist
+    exact coefficientProgram_tCount n cursor _ _ _ .sub false .work2 read hist
+  · intro cursor hist
+    simp only [optimizedEMiddleSegment, compiledTCount]
+    exact literalProgram_tCount _ read hist
+  · intro cursor hist
+    exact coefficientProgram_tCount n cursor _ _ _ .add true .work2 read hist
+  · intro cursor hist
+    simp only [optimizedESuffixSegment, compiledTCount]
+    exact literalProgram_tCount _ read hist
+
+theorem fiveSegment_tCount (pre mid suf : Circuit) (first second : AdaptiveCircuit) :
+    (sequenceCircuit ([.unitary pre .done, first, .unitary mid .done,
+      second, .unitary suf .done] : List AdaptiveCircuit)).tCount =
+      ShorECDLP.tCount pre + first.tCount + ShorECDLP.tCount mid +
+        second.tCount + ShorECDLP.tCount suf := by
+  simp only [sequenceCircuit, adaptive_tCount_seq, AdaptiveCircuit.tCount]
+  omega
+
+theorem productionCoefficientSource_tCount (T : Nat) :
+    (blockEAdaptive indexedStepProductionRegisters 256
+      (certifiedActiveWindows 256 T).coefficient).tCount =
+      ShorECDLP.tCount productionEPrefix +
+        (coefficientPrefixAdaptive
+          (indexedStepProductionRegisters.coefficient
+            (certifiedActiveWindows 256 T).coefficient)
+          (certifiedActiveWindows 256 T).coefficient.start
+          (certifiedActiveWindows 256 T).coefficient.stop .sub false .work2).tCount +
+        ShorECDLP.tCount productionEMiddle +
+        (coefficientPrefixAdaptive
+          (indexedStepProductionRegisters.coefficient
+            (certifiedActiveWindows 256 T).coefficient)
+          (certifiedActiveWindows 256 T).coefficient.start
+          (certifiedActiveWindows 256 T).coefficient.stop .add true .work2).tCount +
+        ShorECDLP.tCount productionESuffix := by
+  rw [← coefficientBlockSources_eq indexedStepProductionRegisters 256
+    (certifiedActiveWindows 256 T).coefficient]
+  rw [productionCoefficientBlockSources T]
+  exact fiveSegment_tCount _ _ _ _ _
+
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 4000000 in
 theorem optimizedCoefficientProgram_tCount (n start T : Nat)
@@ -251,56 +358,98 @@ theorem optimizedCoefficientProgram_tCount (n start T : Nat)
     compiledTCount (optimizedCoefficientProgram n start T) read history + 84 =
       (blockEAdaptive indexedStepProductionRegisters 256
         (certifiedActiveWindows 256 T).coefficient).tCount := by
-  let r := indexedStepProductionRegisters
-  let w := (certifiedActiveWindows 256 T).coefficient
-  unfold optimizedCoefficientProgram
-  let sources : List AdaptiveCircuit := [
-      .unitary (cancelBoundaryCCX productionEPrefix) .done,
-      coefficientPrefixAdaptive (r.coefficient w) w.start w.stop .sub false .work2,
-      .unitary productionEMiddle .done,
-      coefficientPrefixAdaptive (r.coefficient w) w.start w.stop .add true .work2,
-      .unitary (cancelBoundaryCCX productionESuffix) .done]
-  have hsegments : List.Forall₂
-      (fun p source ↦ ∀ cursor hist,
-        compiledTCount (p cursor) read hist = source.tCount)
-      (optimizedCoefficientSegments n T) sources := by
-    unfold optimizedCoefficientSegments sources
-    dsimp only [r, w]
+  rw [optimizedCoefficientProgram_tCount_formula n start T read history]
+  rw [fiveSegment_tCount]
+  rw [productionCoefficientSource_tCount T]
+  have hp := productionEPrefix_cancel_tCount
+  have hs := productionESuffix_cancel_tCount
+  omega
+
+theorem optimizedCoefficientAdaptive_tCount (T : Nat) :
+    (optimizedCoefficientAdaptive T).tCount + 84 =
+      (blockEAdaptive indexedStepProductionRegisters 256
+        (certifiedActiveWindows 256 T).coefficient).tCount := by
+  have h := optimizedCoefficientProgram_tCount 1 0 T (fun _ ↦ false) Fin.elim0
+  rw [optimizedCoefficientProgram_tCount_formula] at h
+  simpa only [optimizedCoefficientAdaptive] using h
+
+def optimizedMeasuredStepSources (T : Nat) : List AdaptiveCircuit :=
+  let r := indexedStepProductionRegisters;
+  [.unitary (blockAForward r) .done,
+    blockBAdaptive r 256 (certifiedActiveWindows 256 T).remainder,
+    .unitary (blockCForward r ++
+      blockDForward r (certifiedActiveWindows 256 T).quotientSwap) .done,
+    optimizedCoefficientAdaptive T,
+    .unitary (blockFForward r) .done,
+    phaseUpdateEpochAdaptive r.phaseUpdate r.shiftEpoch,
+    measuredBlockHForward r 256 T]
+
+def optimizedMeasuredStepSegments (n T : Nat) : List (FixedSegment n) :=
+  let r := indexedStepProductionRegisters;
+  [(fun _ ↦ ⟨0, literalProgram (blockAForward r)⟩),
+    (fun cursor ↦ remainderBlockProgram n cursor r 256
+      (certifiedActiveWindows 256 T).remainder),
+    (fun _ ↦ ⟨0, literalProgram (blockCForward r ++
+      blockDForward r (certifiedActiveWindows 256 T).quotientSwap)⟩),
+    (fun cursor ↦ optimizedCoefficientProgram n cursor T),
+    (fun _ ↦ ⟨0, literalProgram (blockFForward r)⟩),
+    (fun cursor ↦ phaseProgram n cursor r.phaseUpdate r.shiftEpoch),
+    (fun cursor ↦ hProgram n cursor r 256 T)]
+
+def optimizedMeasuredStepProgram (n start T : Nat) :
+    (count : Nat) × Straight n start (start+count) :=
+  sequenceProgram n (optimizedMeasuredStepSegments n T) start
+
+theorem optimizedMeasuredStepProgram_run (n start T : Nat)
+    (read : ConstantBit n → Bool) (history : Fin start → Bool) :
+    compiledRun (optimizedMeasuredStepProgram n start T) read history =
+      (measuredIndexedStep indexedStepProductionRegisters 256 T).run := by
+  unfold optimizedMeasuredStepProgram
+  rw [sequenceProgram_run n (optimizedMeasuredStepSegments n T)
+    (optimizedMeasuredStepSources T) read]
+  · rw [← measuredStepSources_eq indexedStepProductionRegisters 256 T]
+    simp only [optimizedMeasuredStepSources, measuredStepSources, sequenceCircuit,
+      AdaptiveCircuit.run_seq, optimizedCoefficientAdaptive_run]
+  · unfold optimizedMeasuredStepSegments optimizedMeasuredStepSources
+    dsimp only
     refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_
-      (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ List.Forall₂.nil))))
+      (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_
+        (List.Forall₂.cons ?_ List.Forall₂.nil))))))
+    · intro cursor hist; exact literalCompiled_run _ read hist
+    · intro cursor hist; exact remainderBlockProgram_run n cursor _ 256 _ read hist
+    · intro cursor hist; exact literalCompiled_run _ read hist
+    · intro cursor hist; exact optimizedCoefficientProgram_run_source n cursor T read hist
+    · intro cursor hist; exact literalCompiled_run _ read hist
+    · intro cursor hist; exact phaseProgram_run n cursor _ _ read hist
+    · intro cursor hist; exact hProgram_run n cursor _ 256 T read hist
+
+theorem optimizedMeasuredStepProgram_tCount (n start T : Nat)
+    (read : ConstantBit n → Bool) (history : Fin start → Bool) :
+    compiledTCount (optimizedMeasuredStepProgram n start T) read history + 84 =
+      (measuredIndexedStep indexedStepProductionRegisters 256 T).tCount := by
+  let sources := optimizedMeasuredStepSources T
+  have hs : List.Forall₂ (fun p source ↦ ∀ cursor hist,
+      compiledTCount (p cursor) read hist = source.tCount)
+      (optimizedMeasuredStepSegments n T) sources := by
+    unfold optimizedMeasuredStepSegments optimizedMeasuredStepSources sources
+    dsimp only
+    refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_
+      (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_
+        (List.Forall₂.cons ?_ List.Forall₂.nil))))))
+    · intro cursor hist; exact literalCompiled_tCount _ read hist
+    · intro cursor hist; exact remainderBlockProgram_tCount n cursor _ 256 _ read hist
+    · intro cursor hist; exact literalCompiled_tCount _ read hist
     · intro cursor hist
-      simp only [optimizedEPrefixSegment, compiledTCount]
-      exact literalProgram_tCount _ read hist
-    · intro cursor hist
-      exact coefficientProgram_tCount n cursor _ _ _ .sub false .work2 read hist
-    · intro cursor hist
-      simp only [optimizedEMiddleSegment, compiledTCount]
-      exact literalProgram_tCount _ read hist
-    · intro cursor hist
-      exact coefficientProgram_tCount n cursor _ _ _ .add true .work2 read hist
-    · intro cursor hist
-      simp only [optimizedESuffixSegment, compiledTCount]
-      exact literalProgram_tCount _ read hist
-  have hopt := sequenceProgram_tCount n (optimizedCoefficientSegments n T) sources
-    read hsegments start history
-  rw [hopt]
-  calc
-    (sequenceCircuit sources).tCount + 84 =
-        (blockEAdaptive r 256 w).tCount := by
-      rw [← coefficientBlockSources_eq r 256 w, productionCoefficientBlockSources T]
-      simp only [sequenceCircuit, sources, r, w]
-      change (ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) +
-          ((coefficientPrefixAdaptive _ _ _ .sub false .work2).tCount +
-            (ShorECDLP.tCount productionEMiddle +
-              ((coefficientPrefixAdaptive _ _ _ .add true .work2).tCount +
-                ShorECDLP.tCount (cancelBoundaryCCX productionESuffix))))) + 84 = _
-      have hp : ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) + 42 =
-          ShorECDLP.tCount productionEPrefix := by
-        exact productionEPrefix_cancel_tCount
-      have hs : ShorECDLP.tCount (cancelBoundaryCCX productionESuffix) + 42 =
-          ShorECDLP.tCount productionESuffix := by
-        exact productionESuffix_cancel_tCount
-      omega
-    _ = _ := rfl
+      rw [optimizedCoefficientProgram_tCount_formula n cursor T read hist]
+    · intro cursor hist; exact literalCompiled_tCount _ read hist
+    · intro cursor hist; exact phaseProgram_tCount n cursor _ _ read hist
+    · intro cursor hist; exact hProgram_tCount n cursor _ 256 T read hist
+  unfold optimizedMeasuredStepProgram
+  rw [sequenceProgram_tCount n (optimizedMeasuredStepSegments n T) sources read hs start history]
+  rw [← measuredStepSources_eq indexedStepProductionRegisters 256 T]
+  simp only [optimizedMeasuredStepSources, measuredStepSources, sequenceCircuit,
+    adaptive_tCount_seq]
+  have hc := optimizedCoefficientAdaptive_tCount T
+  omega
 
 end ShorECDLP.Paper2607_13816.ChallengeMigration
