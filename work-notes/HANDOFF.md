@@ -1,12 +1,12 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 14b completed read-only fewer-window analysis; `shorecdlp-m` untouched)._
+_Last updated: 2026-10-29 by Codex (Brief 16 stopped at the single-trial exact-count gate; `shorecdlp-m` remains clean at `c13a293`)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
-| frontier dadon 3e53f42 | 855 | 16,901,720,498 | **14,450,971,025,790** | bench commit `8513c15`; reproduced `entrants/20261029-1524-frontier-3e53f42` |
+| frontier dadon c6a88fc | 855 | 15,365,238,944 | **13,137,279,297,120** | bench commit `c13a293`; Brief 16 base, boundary unchanged |
 | frontier ff1bf8d | 855 | 86,239,836,030 | **73,735,059,805,650** | frontier commit `93051d2`; reproduced before Brief 13 |
 | rounds6 (current bench Entrant) | 3,932 | 86,360,247,846 | **339,568,494,530,472** | official benchmark accepted, full kernel replay, 217s; `entrants/20261029-1215-rounds6` |
 | streaming26 (previous accepted entrant) | 3,932 | 374,227,740,666 | **1,471,463,476,298,712** | official benchmark accepted, full kernel replay, 232s; `entrants/20261029-1149-streaming26` |
@@ -26,9 +26,19 @@ _Last updated: 2026-10-29 by Codex (Brief 14b completed read-only fewer-window a
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
-| Codex | 2026-10-29 | Brief 16: exact fast multiplier with dirty-borrowed fold on leader `60e5072` / bench `b46591c` | `workspace/`; `stack/30-fast-multiplier/`; `/home/gitzard/shorecdlp-m/…/Entrant/` only if the 3% gate passes |
 
 ## Next up (unclaimed)
+
+- Brief 16 stopped at the single-trial exact-count gate. `workspace/MulClean.lean` still
+  proves 68–69 clean lanes at five calls and only 25 at three calls on `c13a293`. The
+  exact 30-window 3% condition is `5*high + 3*low < 26144.023001 CCX` per recurring cell.
+  The donor's measured ~540-CCX/bit headline is ineligible: it truncates the fold and flag
+  comparisons. The exact fused quotient is only `q∈{-1,0,1}`, but its post-correction flag
+  lacks a proved narrow phase-safe erase; using the full word reconstruction removes the
+  priced gain. Evidence: `workspace/FastMulAlgebra.lean`,
+  `workspace/dirtyfold_feasibility.py`, `docs/MUL-PLAN.md`, and
+  `work-notes/experiments/2026-10-29-dirtyfold-mul.md`. Achieved patch cut 0%; no stack
+  directory, score, snapshot, submission or commit. Bench is clean at `c13a293`.
 
 - Brief 14b supersedes Brief 14 and is complete: `wrappedShift` first fits at rightBits=203 and
   its 263/203 packing removes four signed additions (resource-only score 12,699,380,930,760), but

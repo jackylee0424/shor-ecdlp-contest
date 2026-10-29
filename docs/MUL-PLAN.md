@@ -1,5 +1,32 @@
 # C8 exact fast multiplier: feasibility result
 
+## Single-trial re-audit (`c13a293`, Brief 16)
+
+The dadon single-trial base has 30 corrected windows, not the older six-round schedule.
+The checked lane inventory is unchanged: five replacement sites have 68–69 clean lanes
+and three post-forward-EEA sites have only 25. There are eight calls/window and each call
+is `1,110,533 CCX`, with 255 recurring 4,344-CCX add/double cells plus a terminal
+2,813-CCX add.
+
+At 855 qubits the exact 3% gate is
+
+```text
+5 * spaciousCellCCX + 3 * tightCellCCX < 26144.023001.
+```
+
+The ecdsa.fail donor emits about 540 CCX/bit at a 76-lane pool, but that figure retains
+three inadmissible exceptional-state shortcuts: a 64-lane fold, a 32-lane overflow erase,
+and an assumed post-fold high bit. The exact fused integer reduction has correction
+`d+B-q*p`, `B=2*(-1)^s*k*c+h*(c-1)`, and `q∈{-1,0,1}`. Dirty MCX can compute the narrow
+boundary predicate while restoring donors, but the quotient flag still needs an exact
+phase-safe erase after the word correction. The current library offers only a full word
+reconstruction/compare for that step; no continuation-aware narrow erasure theorem exists.
+
+Consequently Brief 16 did not pass the exact-count gate. The achieved patch cut is 0%; no
+Entrant or stack patch was created. Reproduction and conditional sensitivity calculations:
+`workspace/dirtyfold_feasibility.py`; algebra: `workspace/FastMulAlgebra.lean`; full record:
+`work-notes/experiments/2026-10-29-dirtyfold-mul.md`.
+
 Brief 13, 2026-10-29. **Stopped at the required feasibility gate.** The frontier does not
 prove the roughly 70 clean lanes required by the proposed modp_ft-style cell at every call
 site. Three Horner calls have only **25** clean lanes outside their 256-bit destination.
