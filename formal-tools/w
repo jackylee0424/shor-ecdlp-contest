@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Windows-side shim (Git Bash): run a formal-tools script inside WSL gitzard-formal.
+# usage: formal-tools/w build.sh | formal-tools/w check.sh workspace/Foo.lean | ...
+set -euo pipefail
+tool="$1"; shift
+exec wsl.exe -d gitzard-formal -- bash /mnt/c/code/shor-ecdlp-contest/formal-tools/"$tool" "$@"

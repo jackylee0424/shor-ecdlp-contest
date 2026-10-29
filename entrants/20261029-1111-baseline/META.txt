@@ -1,0 +1,4 @@
+name: baseline
+date: 2026-10-29T11:11:05-07:00
+bench_commit: 535a493f520dd7efe8c1cfc0b8b5a2741d5b35c1
+note: shipped entrant, yukon run accepted 73370341954576411840

@@ -1,2 +1,7 @@
 # cache and other artifacts produced by Lean's Lake build tool
 .lake/
+logs/
+__pycache__/
+*.pyc
+# stale empty dir from an early Windows clone; the bench lives in WSL ~/shorecdlp
+/shorecdlp/
