@@ -3,7 +3,7 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain" (updated 2026-10-29 16:20): leader **dadon `c6a88fc` (bench `c13a293`): 855 × 15,365,238,944 = 13,137,279,297,120**: a single trial, 263-bit left, 224-bit physical right rounded to a 203-bit `wrappedShift` word, 1 direct load + 30 corrected windows, with EEA literal cancellation. **Submission bar (> 10 %): Q×T < 11,823,551,367,408.** Each window ≈ 3.3 % of T.
+Baseline for "gain" (updated 2026-10-29 16:35): leader **spariev `c5e75ef` (bench `be76d47`): 855 × 15,261,137,744 = 13,048,272,771,120**: dadon's `c6a88fc` (single trial, 263-bit left, 224→203 rounded `wrappedShift` right, 1 direct + 30 corrected windows) with the verified EEA literal cancellation extended to all four EEA occurrences per window (−4,626,720 T/window). Only `Main.lean` differs from `c13a293`. **Submission bar (> 10 %): Q×T < 11,743,445,494,008.**
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
@@ -60,7 +60,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | E2 | Averaged rounding-window lemma for `nearestPair` at 262/262 | −0.000003% from 524 phases; no window removed | **superseded by E1b on the new base** | brief 14b: projected uniform lower ≈0.993668; first repacked window cut needs 258/258, where success fails |
 | E3 | Row-optimal window re-packing under 983,040 rows | 262/262 still has 33 additions; 263/203 has 29 | **done: analysis** | exact DP/counts: `workspace/fewer_windows.py`; assignments and risks: `docs/FEWER-WINDOWS.md` |
 | E5 | Width-specialize the correction QROM instead of aliasing 15-bit windows through the 32,768-row tree | −0.158783% at 263/263; −0.176428% stacked with 262/262 | **in flight (brief 15, `stack/20-lookup-trees`); below submission policy** | exact conditional law `91·(rows−1)+85,848`; needs new trees/routes/coherence/resource facts (`docs/FEWER-WINDOWS.md`) |
-| E4 | Verified generic gate cancellation over more literal blocks (extend dadon's pass beyond the 7 EEA literals) | unpriced | **open** | dadon `3e53f42` note: cancellation procedure proved correct for X/CX/CCX |
+| E4 | Verified generic gate cancellation over more literal blocks | all 4 EEA occurrences done | **partly done by others** (spariev `c5e75ef`: all four EEA occurrences; still open beyond the 7 EEA literal blocks) | dadon `3e53f42` note: cancellation procedure proved correct for X/CX/CCX |
 
 ## D. Process
 

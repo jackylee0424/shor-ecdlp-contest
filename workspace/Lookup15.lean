@@ -485,8 +485,7 @@ def correctionProgram (start : Nat) :
   ipxProgramOf rows tree path start
 
 def segments : List (FixedSegment 32768) :=
-  [Single.Physical.coordinateProgram, Single.Physical.yNegateProgram,
-    correctionProgram, Single.Physical.yNegateProgram]
+  [coordinateProgram, yNegateProgram, correctionProgram, yNegateProgram]
 
 def core (start : Nat) : (count : Nat) × Straight 32768 start (start + count) :=
   sequenceProgram 32768 segments start
@@ -513,11 +512,11 @@ theorem core_run (coeffs : Fin 32768 → PointCoeff) (start : Nat) (Q : Point)
   · intro cursor h
     exact Single.Physical.coordinateProgram_run coeffs cursor Q h
   · intro cursor h
-    exact Single.Physical.yNegateProgram_run cursor _ h
+    exact yNegateProgram_run cursor _ h
   · intro cursor h
     exact correctionProgram_run coeffs cursor Q h
   · intro cursor h
-    exact Single.Physical.yNegateProgram_run cursor _ h
+    exact yNegateProgram_run cursor _ h
 
 theorem prepared_run (coeffs : Fin 32768 → PointCoeff) (start : Nat) (Q : Point)
     (history : Fin start → Bool) :
@@ -532,8 +531,17 @@ theorem correction_count (start : Nat) : (correctionProgram start).1 = 212979 :=
   simp only [correctionProgram,ipxProgramOf]
   rw [ipxOps_measurements _ _ _ tree_layout,ipxSchedule_queries,tree_nodes]
 
+private theorem sequence_count (n : Nat) (ps : List (FixedSegment n)) (counts : List Nat)
+    (h : List.Forall₂ (fun p count => ∀ start, (p start).1 = count) ps counts) (start : Nat) :
+    (sequenceProgram n ps start).1 = counts.sum := by
+  induction h generalizing start with
+  | nil => simp only [sequenceProgram,List.sum_nil]
+  | cons hp _ ih =>
+    simp only [sequenceProgram,appendCompiled,List.sum_cons]
+    rw [hp,ih]
+
 theorem core_count (start : Nat) : (core start).1 = 30487725 := by
-  have h := Single.Physical.sequence_count 32768 segments
+  have h := sequence_count 32768 segments
     ([30272702,1022,212979,1022] : List Nat) (by
       unfold segments
       exact List.Forall₂.cons Single.Physical.coordinate_count
@@ -568,6 +576,49 @@ noncomputable def actualState (coeffs : Fin 32768 → PointCoeff) (Q : Point)
     (s : BasisState) : BasisState :=
   relabelBasis (windowAddressPerm 855 (by decide))
     (preparedState coeffs Q (relabelBasis (windowAddressPerm 855 (by decide)).symm s))
+
+private theorem point_bank_bound (w : Wire) (hw : w ∈ pointLogicalWires) : w < 839 := by
+  simp only [pointLogicalWires,pointCorrectionX,pointCorrectionYInf,List.mem_append,
+    List.mem_cons,List.not_mem_nil,or_false,List.mem_range'_1] at hw
+  dsimp only [Wire] at *
+  omega
+
+private theorem relabelPointWrite (start : Nat) (hs : 855 ≤ start) (P : Point)
+    (s : BasisState) :
+    relabelBasis (windowAddressPerm start hs)
+      (pointWrite P (relabelBasis (windowAddressPerm start hs).symm s)) = pointWrite P s := by
+  have hsym : (windowAddressPerm start hs).symm = windowAddressPerm start hs := rfl
+  funext w
+  by_cases hw : w ∈ pointLogicalWires
+  · have he := windowAddressPerm_core start hs w (point_bank_bound w hw)
+    simp [relabelBasis,hsym,he,pointWrite,hw]
+  · have hn : (windowAddressPerm start hs).symm w ∉ pointLogicalWires := by
+      intro h
+      have he := windowAddressPerm_core start hs _ (point_bank_bound _ h)
+      rw [Equiv.apply_symm_apply] at he
+      exact hw (he ▸ h)
+    simp [relabelBasis,pointWrite,hw,hn]
+
+private theorem relabelCoordinates (start : Nat) (hs : 855 ≤ start) (s : BasisState) :
+    pointStateCoordinates (relabelBasis (windowAddressPerm start hs).symm s) =
+      pointStateCoordinates s := by
+  have he (bits : List Wire) (hb : ∀ w ∈ bits, w < 839) :
+      wireValues bits (relabelBasis (windowAddressPerm start hs).symm s) = wireValues bits s := by
+    apply List.map_congr_left
+    intro w hw
+    simp only [relabelBasis,Equiv.symm_symm,windowAddressPerm_core start hs w (hb w hw)]
+  have hx := he (List.range' 263 256) (by
+    intro w hw
+    simp only [List.mem_range'_1] at hw
+    dsimp only [Wire] at *
+    omega)
+  have hy := he (List.range' 580 256) (by
+    intro w hw
+    simp only [List.mem_range'_1] at hw
+    dsimp only [Wire] at *
+    omega)
+  simp only [pointStateCoordinates,hx,hy,relabelBasis,Equiv.symm_symm,
+    windowAddressPerm_core start hs 838 (by decide)]
 
 theorem actual_coherent (coeffs : Fin 32768 → PointCoeff) (Q : Point)
     (ha : Aliased coeffs) (hQ : order • Q = 0)
@@ -614,8 +665,7 @@ theorem actualState_selected (coeffs : Fin 32768 → PointCoeff) (Q : Point)
   unfold actualState
   rw [preparedState_correct coeffs Q ha hQ hn _
     (Single.Physical.actualWindow_pullback_ready s hs) P
-    ((Single.Physical.relabel_coordinates 855 (by decide) s).trans hP),
-    Single.Physical.relabel_pointWrite]
+    ((relabelCoordinates 855 (by decide) s).trans hP),relabelPointWrite]
   have he : relabelBasis (windowAddressPerm 855 (by decide)).symm s 854 = s 870 := by
     simp only [relabelBasis,Equiv.symm_symm]
     exact congrArg s (windowAddressPerm_address 855 (by decide) 15 (by decide))
