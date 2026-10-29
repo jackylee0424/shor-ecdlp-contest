@@ -28,6 +28,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | B3 | 310 correction-only wire loans | — | **superseded by B1** | `docs/CONTRIBUTIONS-PLAN.md` §1 |
 | B4 | Spooky pebbling on the endpoint bank | — | **dead** | `docs/SPOOKY-ON-09.md` §2–3: the peak comes during compute; +38.6M T/round |
 | B5 | Spooky multiply checkpoint / EEA divide | ~0 | **dead** | the divide sets the peak; spooky R001/R005 |
+| B7 | arXiv:2607.13816 **v3** (2026-09-05): 3n+6⌊log₂n⌋+O(1) qubits, **835** for 256-bit; inversion 2n+6⌊log₂n⌋ qubits, 229n² Toffoli (≈ 15.0M, about the same as the bench's 15.9M per wrapper) | ≈ −2.3 % (qubits only) | **open, XL** | a new paper construction; the bench pins v2. It would need a fresh migration of the space-saving inversion; T gain ≈ 0 |
 | B6 | Below 855: shrink the arithmetic core (EEA/multiply workspace) | each −1 q ≈ −0.12 % | **open, XL** | the ecdsa.fail ~815–849q lineage packs a point add in ~820q; see `docs/ECDSAFAIL-855.md` (pending) |
 
 ## C. T per window (arithmetic)
@@ -58,6 +59,8 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | D1 | Build on the promoted frontier and declare dependencies | **policy** | competitors merge promoted entries within an hour; sub-0.05 % edges are short-lived |
 | D2 | Separate bench copies per concurrent builder (`workspace/make_bench_copy.sh`) | **policy** | never two builders in one checkout |
 | D3 | Codex model for this domain | **policy** | Sol gets cyber-flagged; use Daybreak Blue (`docs/ENVIRONMENT.md`) |
+| D5 | Public-effort watch (checked 2026-10-29 ~14:30) | **policy** | Upstream VerifiedQC: nothing new since 2026-10-28 (`streaming-dev` #554). Leaderboard: ArthurOstapenko `8dca04a` was validating. If it promotes, rebase the stack on it before submitting. `lamport/streaming-certificate-docs` documents the five-word correction trade-off (superseded by B1) |
+| D6 | **Stacking plan** | **plan** | brief 12 (EEA, `~/shorecdlp`) + brief 13 (multiplier, `~/shorecdlp-m`) → then C9 (drop one square) on top of 13 in the same checkout → merge the 12 and 13 Entrant edits in a fresh checkout at the then-leader → submit only if > 10 % |
 | D4 | **Submit only a cut of more than 10 % vs the leader at submission time** (human decision, 2026-10-29) | **policy** | smaller wins are snapshotted and stacked, not submitted. Today's bar: Q×T < 66,361,553,825,085 |
 
 ## Review (2026-10-29)

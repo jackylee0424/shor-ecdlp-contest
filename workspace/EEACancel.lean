@@ -132,10 +132,12 @@ example : CircuitWellFormed productionESuffix := by
     restoreLatestPaperTBoundary_wellFormed _ 256 indexedStepProduction_layout.tBoundary⟩
 
 set_option maxRecDepth 100000 in
-example : ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) + 42 =
+theorem productionEPrefix_cancel_tCount :
+    ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) + 42 =
     ShorECDLP.tCount productionEPrefix := by rfl
 set_option maxRecDepth 100000 in
-example : ShorECDLP.tCount (cancelBoundaryCCX productionESuffix) + 42 =
+theorem productionESuffix_cancel_tCount :
+    ShorECDLP.tCount (cancelBoundaryCCX productionESuffix) + 42 =
     ShorECDLP.tCount productionESuffix := by rfl
 
 theorem unitary_run_cancelBoundaryCCX (gs : Circuit) (hwf : CircuitWellFormed gs) :
@@ -279,24 +281,26 @@ theorem optimizedCoefficientProgram_tCount (n start T : Nat)
     · intro cursor hist
       simp only [optimizedESuffixSegment, compiledTCount]
       exact literalProgram_tCount _ read hist
-  rw [sequenceProgram_tCount n (optimizedCoefficientSegments n T) sources read
-    hsegments start history]
-  rw [← coefficientBlockSources_eq r 256 w]
-  rw [productionCoefficientBlockSources T]
-  show (sequenceCircuit sources).tCount + 84 = _
-  ·
-    simp only [sequenceCircuit, sources, r, w]
-    change (ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) +
-        ((coefficientPrefixAdaptive _ _ _ .sub false .work2).tCount +
-          (ShorECDLP.tCount productionEMiddle +
-            ((coefficientPrefixAdaptive _ _ _ .add true .work2).tCount +
-              ShorECDLP.tCount (cancelBoundaryCCX productionESuffix))))) + 84 = _
-    have hp : ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) + 42 =
-        ShorECDLP.tCount productionEPrefix := by
-      set_option maxRecDepth 100000 in rfl
-    have hs : ShorECDLP.tCount (cancelBoundaryCCX productionESuffix) + 42 =
-        ShorECDLP.tCount productionESuffix := by
-      set_option maxRecDepth 100000 in rfl
-    omega
+  have hopt := sequenceProgram_tCount n (optimizedCoefficientSegments n T) sources
+    read hsegments start history
+  rw [hopt]
+  calc
+    (sequenceCircuit sources).tCount + 84 =
+        (blockEAdaptive r 256 w).tCount := by
+      rw [← coefficientBlockSources_eq r 256 w, productionCoefficientBlockSources T]
+      simp only [sequenceCircuit, sources, r, w]
+      change (ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) +
+          ((coefficientPrefixAdaptive _ _ _ .sub false .work2).tCount +
+            (ShorECDLP.tCount productionEMiddle +
+              ((coefficientPrefixAdaptive _ _ _ .add true .work2).tCount +
+                ShorECDLP.tCount (cancelBoundaryCCX productionESuffix))))) + 84 = _
+      have hp : ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) + 42 =
+          ShorECDLP.tCount productionEPrefix := by
+        exact productionEPrefix_cancel_tCount
+      have hs : ShorECDLP.tCount (cancelBoundaryCCX productionESuffix) + 42 =
+          ShorECDLP.tCount productionESuffix := by
+        exact productionESuffix_cancel_tCount
+      omega
+    _ = _ := rfl
 
 end ShorECDLP.Paper2607_13816.ChallengeMigration
