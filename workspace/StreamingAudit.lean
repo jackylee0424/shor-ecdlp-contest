@@ -36,4 +36,15 @@ open ShorECDLP.Paper2607_13816 ShorECDLP.Paper2607_13816.ChallengeMigration
 #print axioms registerCorrectionProgram_tCount
 #print axioms OuterPlan.entry_reads
 #print axioms coefficientTable_length
+
+#check placedBatchState_pointWrite
+#check placedBatchState_ready
+#check placedBatchState_frame
+#check signedLookupCoordinateProgram_coherent
+#check negativeModularNegateState_involution
+#check batchUnitary_fullFrame
+#print axioms placedBatchState_pointWrite
+#print axioms windowYNegateState_pointWrite
+#print axioms negativeModularNegateState_involution
+#print axioms batchUnitary_fullFrame
 #print axioms streamRepeatedProgram_tight_certificate

@@ -1,0 +1,4 @@
+name: brief03-partial
+date: 2026-10-29T11:33:22-07:00
+bench_commit: 535a493f520dd7efe8c1cfc0b8b5a2741d5b35c1
+note: brief 03 partial Streaming/ (Costs.lean failed omega); superseded by upstream port

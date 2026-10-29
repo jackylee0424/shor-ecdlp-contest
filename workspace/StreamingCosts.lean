@@ -5,6 +5,7 @@ import ShorECDLP.Submission.«2607_13816».Window.LookupPrimitiveCounts
 namespace ShorECDLP.Entrant.Streaming
 open ShorECDLP Quantum ShorECDLP.Challenge ShorECDLP.Secp256k1
 open ShorECDLP.Paper2607_13816 ShorECDLP.Paper2607_13816.ChallengeMigration
+attribute [local irreducible] signedLookupCoordinateProgram primitiveResources batchSource batchedEndpointProgram
 
 /-- The measured correction compiler preserves the source T count for every history. -/
 theorem batchedEndpointProgram_tCount {n : Nat} (read : ConstantBit n → Bool)
@@ -17,12 +18,13 @@ theorem batchedEndpointProgram_tCount {n : Nat} (read : ConstantBit n → Bool)
 theorem placedBatchProgram_tCount (w : OddWindow) (start : Nat) (Q : Point)
     (history : Fin start → Bool) :
     compiledTCount (placedBatchProgram w start) (readConstant coefficientAt Q) history = 3784382 := by
-  have h := relabelCompiled_tCount batchPlacement
-    (batchedEndpointProgram (batchWindowRows w) 1024 batchWindowTree 836 pointLookupPath start)
+  simp only [placedBatchProgram, relabelCompiled, compiledTCount,
+    relabelStraight_instantiate, AdaptiveCircuit.relabel_tCount]
+  rw [show ((batchedEndpointProgram (batchWindowRows w) 1024 batchWindowTree 836
+    pointLookupPath start).2.instantiate (readConstant coefficientAt Q) history).tCount =
     (batchSource (readConstant coefficientAt Q) (batchWindowRows w) 1024 batchWindowTree
-      836 pointLookupPath batchSchedule) (readConstant coefficientAt Q) history
-    (batchedEndpointProgram_tCount _ _ _ _ _ _ _ _)
-  exact h.trans (placedBatchSource_tCount Q w)
+      836 pointLookupPath batchSchedule).tCount from batchedEndpointProgram_tCount _ _ _ _ _ _ _ _]
+  simpa only [placedBatchSource, AdaptiveCircuit.relabel_tCount] using placedBatchSource_tCount Q w
 
 /-- Counts of the totalized coordinate source, including the zero-test wrappers. -/
 theorem signedCoordinate_counts (x y : Nat → Nat) :
@@ -40,7 +42,9 @@ theorem signedCoordinate_counts (x y : Nat → Nat) :
       lookupWordPrimitives, pointLookupAddress, List.length_range', PrimitiveResources.add,
       ha.1, ha.2.1, ha.2.2]
     decide +kernel
-  exact ⟨(primitiveResources_T_of_no_phase _ hn.2.1).trans (by rw [hn.1]), hn.2.2⟩
+  constructor
+  · rw [primitiveResources_T_of_no_phase _ hn.2.1, hn.1]
+  · simpa only [primitiveResources] using hn.2.2
 
 theorem sharedYNegateProgram_tCount (w : OddWindow) (start : Nat)
     (read : ConstantBit 983040 → Bool) (history : Fin start → Bool) :
@@ -53,6 +57,7 @@ theorem batchedWindowCore_tCount (w : OddWindow) (start : Nat) (Q : Point)
     (hQ : order • Q = 0) (history : Fin start → Bool) :
     compiledTCount (batchedWindowCore w start) (readConstant coefficientAt Q) history =
       (sequenceCircuit (batchedWindowSources Q w)).tCount := by
+  unfold batchedWindowCore
   apply sequenceProgram_tCount
   refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ .nil)))
   · intro cursor h; exact sharedCoordinateProgram_tCount w cursor Q hQ h
@@ -60,5 +65,27 @@ theorem batchedWindowCore_tCount (w : OddWindow) (start : Nat) (Q : Point)
   · intro cursor h
     exact (placedBatchProgram_tCount w cursor Q h).trans (placedBatchSource_tCount Q w).symm
   · intro cursor h; exact sharedYNegateProgram_tCount w cursor _ h
+
+
+attribute [local irreducible] controlledModularNegate negativeControlledModularNegate
+
+/-- Extra sign conjugations use the same measured modular-negation counts. -/
+theorem windowYNegate_counts : windowYNegate.tCount = 21434 ∧
+    windowYNegate.measurementCount = 1022 := by
+  unfold windowYNegate
+  have h := negativeControlledModularNegate_resources (List.range' 580 256) (List.range' 7 256)
+    (constantBits 256 ShorECDLP.p) 854 559 560 561 558
+  rw [h.1, h.2]
+  have hm : constantBits 256 ShorECDLP.p = secp256k1ModulusBits := by decide +kernel
+  rw [hm]
+  exact controlledModularNegate256_counts (List.range' 580 256) (List.range' 7 256)
+    854 559 560 561 558 (by simp) (by simp)
+
+
+/-- The reset list omits the zero-test flag touched by totalized arithmetic. -/
+theorem zeroFlag_not_reset : (837 : Wire) ∉ batchedResetWires := by
+  simp only [batchedResetWires, resetWires, List.mem_append, List.mem_range, List.mem_range'_1,
+    List.mem_singleton]
+  decide +kernel
 
 end ShorECDLP.Entrant.Streaming

@@ -18,6 +18,7 @@ _Last updated: 2026-10-29 by Codex (Brief 02 complete; Brief 01 findings retaine
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 04: port upstream certificate and certify 26 streaming rounds | workspace/port_upstream.py; Entrant/Streaming/; experiments/2026-10-29-streaming26.md |
 | Codex | 2026-10-29 | Brief 03: streaming migration audit, cost model and first proof milestone | docs/MIGRATION-PLAN.md; workspace/; Entrant/Streaming/ |
 
 ## Next up (unclaimed)

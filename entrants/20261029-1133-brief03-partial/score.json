@@ -1,0 +1,20 @@
+{
+  "score": 7.337034195457641e+19,
+  "scoreExact": "73370341954576411840",
+  "metrics": {
+    "tCount": 355060161799520,
+    "tModel": 355060161799520,
+    "qubits": 206642,
+    "toffoli": 50722880257074,
+    "nonClifford": 4000000000000000,
+    "measurements": 530,
+    "gateSlotsLimit": 4000000000000000,
+    "coefficientRowsLimit": 983040,
+    "candidateChecksLimit": 31525197391593584,
+    "axioms": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  }
+}

@@ -20,3 +20,12 @@
   Q×T = 73,370,341,954,576,411,840 (206,642 × 355,060,161,799,520), 530 measurements, axioms = {Classical.choice, Quot.sound, propext}.
   Warm wall time 1m45s. Snapshot: `entrants/20261029-1111-baseline`.
 - Launched Codex brief 03 (streaming migration audit + first milestone).
+
+## 2026-10-29 — Claude Code (Opus 5.5) — leaderboard moved; prior-works inventory
+
+- Leaderboard best is now 7,243,285,108,034,080,000 (`9d15949`, 77,624 × 93,312,443,420,000). Its source is exported to WSL `~/frontier/`.
+- Found upstream VerifiedQC `lamport/challenge-final-certificate` @ b46e337: an unconditional streaming certificate (3932 × 806,028,979,896, 56 rounds),
+  proved against a raised measurement limit (5e10). Bench limit 47,471,340,504 → cut to 26 rounds (≥ 0.9902) → projected Q×T 1,471,463,476,298,712.
+  The bench has git remote `upstream` (local Windows clone). 71 added files, no forbidden tokens. See `docs/PRIOR-WORKS.md`.
+- Stopped Codex brief 03 (superseded; partial `Entrant/Streaming/Costs.lean` snapshotted to `entrants/20261029-1133-brief03-partial`, then removed).
+- Launched Codex brief 04: port + 26 rounds.
