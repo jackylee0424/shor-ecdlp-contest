@@ -56,9 +56,9 @@ lemma geometric_normSq (N : ℕ) (t : ℝ) :
   rw [hs (∑ x ∈ Finset.range N, eigenvalue t ^ x)]
   simp only [star_sum, Finset.sum_mul, Finset.mul_sum, Complex.re_sum,
     eigen_mul_conj]
-  simp only [Complex.normSq_inv, Complex.normSq_natCast, ← inv_pow]
+  simp only [Complex.normSq_inv, Complex.normSq_natCast]
   rw [Finset.sum_comm]
-  simp only [inv_pow, pow_two]
+  simp only [pow_two]
   ring
 
 /-- A quadratic lower bound for the exact finite Fourier peak. -/
@@ -83,7 +83,7 @@ theorem geometric_quadratic (N : ℕ) (hN : 0 < N) (t : ℝ) :
   have he : (N:ℝ)⁻¹^2 * ((N:ℝ)^2 - 2*Real.pi^2*t^2*((N:ℝ)^2*((N:ℝ)^2-1)/6)) =
       1 - Real.pi^2*((N:ℝ)*t)^2/3 + Real.pi^2*t^2/3 := by
     field_simp
-    <;> ring
+    ; ring
   rw [he] at hb'
   nlinarith [sq_nonneg (Real.pi*t)]
 end

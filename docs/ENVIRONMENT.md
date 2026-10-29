@@ -23,8 +23,8 @@ yukon run --track lean        # local verifier: leanchecker replay + judge -> sc
 yukon submit --track lean --dependencies-file dependencies.json   # ONLY when the human says so
 ```
 
-Yukon **trace collection is on**: yukon commands upload the calling agent's transcript. Disable it with
-`yukon trace off`. `formal-tools/score.sh` runs `./benchmark.sh` directly, without going through yukon.
+Yukon trace collection was **turned off on 2026-10-29** in both installs (`yukon trace status` shows disabled). Re-enable it with `yukon trace on`. Previously
+enabled by default. `formal-tools/score.sh` runs `./benchmark.sh` directly, without going through yukon.
 
 ## Codex sub-agents
 

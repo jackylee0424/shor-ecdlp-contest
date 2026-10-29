@@ -112,7 +112,8 @@ def main():
         output = '\n'.join('import ' + dep for dep in external) + '\n\n' + header
         for mod in group:
             short = mod.rsplit('.', 1)[1]
-            output += f'\n/-! Upstream module: {mod} -/\nsection Port_{short}\n\n'
+            origin = 'Our contribution module' if '.Contributions.' in mod else 'Upstream module'
+            output += f'\n/-! {origin}: {mod} -/\nsection Port_{short}\n\n'
             output += bodies[mod] + f'\n\nend Port_{short}\n'
         if name == 'Main':
             output += '\n' + EXPORTS

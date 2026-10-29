@@ -59,9 +59,9 @@ lemma geometric_normSq (N : ℕ) (t : ℝ) :
   rw [hs (∑ x ∈ Finset.range N, eigenvalue t ^ x)]
   simp only [star_sum, Finset.sum_mul, Finset.mul_sum, Complex.re_sum,
     eigen_mul_conj]
-  simp only [Complex.normSq_inv, Complex.normSq_natCast, ← inv_pow]
+  simp only [Complex.normSq_inv, Complex.normSq_natCast]
   rw [Finset.sum_comm]
-  simp only [inv_pow, pow_two]
+  simp only [pow_two]
   ring
 
 /-- A quadratic lower bound for the exact finite Fourier peak. -/
@@ -86,7 +86,7 @@ theorem geometric_quadratic (N : ℕ) (hN : 0 < N) (t : ℝ) :
   have he : (N:ℝ)⁻¹^2 * ((N:ℝ)^2 - 2*Real.pi^2*t^2*((N:ℝ)^2*((N:ℝ)^2-1)/6)) =
       1 - Real.pi^2*((N:ℝ)*t)^2/3 + Real.pi^2*t^2/3 := by
     field_simp
-    <;> ring
+    ; ring
   rw [he] at hb'
   nlinarith [sq_nonneg (Real.pi*t)]
 end
@@ -108,7 +108,7 @@ lemma sin_lower_three (x : ℝ) (hx : 0 ≤ x) : x-x^3/6 ≤ Real.sin x := by
   have h := primitive_nonneg (fun x => Real.sin x-x+x^3/6)
     (fun x => Real.cos x-1+x^2/2)
     (by intro y; convert (((Real.hasDerivAt_sin y).sub (hasDerivAt_id y)).add
-      (((hasDerivAt_id y).pow 3).div_const 6)) using 1 <;> dsimp <;> ring)
+      (((hasDerivAt_id y).pow 3).div_const 6)) using 1 ; dsimp ; ring)
     (by simp) (by intro y hy; nlinarith [Real.one_sub_sq_div_two_le_cos (x := y)]) x hx
   linarith
 
@@ -116,7 +116,7 @@ lemma cos_upper_four (x : ℝ) (hx : 0 ≤ x) : Real.cos x ≤ 1-x^2/2+x^4/24 :=
   have h := primitive_nonneg (fun x => 1-x^2/2+x^4/24-Real.cos x)
     (fun x => Real.sin x-x+x^3/6)
     (by intro y; convert (((hasDerivAt_const y (1:ℝ)).sub (((hasDerivAt_id y).pow 2).div_const 2)).add
-      (((hasDerivAt_id y).pow 4).div_const 24)).sub (Real.hasDerivAt_cos y) using 1 <;> dsimp <;> ring)
+      (((hasDerivAt_id y).pow 4).div_const 24)).sub (Real.hasDerivAt_cos y) using 1 ; dsimp ; ring)
     (by simp) (by intro y hy; linarith [sin_lower_three y hy]) x hx
   linarith
 
@@ -124,7 +124,7 @@ lemma sin_upper_five (x : ℝ) (hx : 0 ≤ x) : Real.sin x ≤ x-x^3/6+x^5/120 :
   have h := primitive_nonneg (fun x => x-x^3/6+x^5/120-Real.sin x)
     (fun x => 1-x^2/2+x^4/24-Real.cos x)
     (by intro y; convert (((hasDerivAt_id y).sub (((hasDerivAt_id y).pow 3).div_const 6)).add
-      (((hasDerivAt_id y).pow 5).div_const 120)).sub (Real.hasDerivAt_sin y) using 1 <;> dsimp <;> ring)
+      (((hasDerivAt_id y).pow 5).div_const 120)).sub (Real.hasDerivAt_sin y) using 1 ; dsimp ; ring)
     (by simp) (by intro y hy; linarith [cos_upper_four y hy]) x hx
   linarith
 
@@ -134,7 +134,7 @@ lemma cos_lower_six_nonneg (x : ℝ) (hx : 0 ≤ x) :
     (fun x => x-x^3/6+x^5/120-Real.sin x)
     (by intro y; convert ((((Real.hasDerivAt_cos y).sub (hasDerivAt_const y (1:ℝ))).add
       (((hasDerivAt_id y).pow 2).div_const 2)).sub
-      (((hasDerivAt_id y).pow 4).div_const 24)).add (((hasDerivAt_id y).pow 6).div_const 720) using 1 <;> dsimp <;> ring)
+      (((hasDerivAt_id y).pow 4).div_const 24)).add (((hasDerivAt_id y).pow 6).div_const 720) using 1 ; dsimp ; ring)
     (by simp) (by intro y hy; linarith [sin_upper_five y hy]) x hx
   linarith
 
@@ -314,7 +314,7 @@ lemma raw_peak_quadratic (r n : ℕ) (k : Fin r) (hodd : r%2=1) :
   have he : ((2^n:ℕ):ℝ)*((k.val:ℝ)/r-(reducedPeakRaw r n k:ℝ)/(2^n:ℕ)) =
       (2^n:ℕ)*(k.val:ℝ)/r - (reducedPeakRaw r n k:ℝ) := by field_simp
   rw [he, raw_residual r n k hodd] at h
-  convert h using 1 <;> ring
+  convert h using 1 ; ring
 
 lemma raw_reduced_mass_eq (r n : ℕ) (k : Fin r) :
     Complex.normSq (paperPhaseAmplitude n ((k.val:ℝ)/r) (reducedPeakRaw r n k)) =
@@ -342,7 +342,7 @@ lemma peak_mass_le_one (n : ℕ) (t : ℝ) (v : Fin (2^n)) :
   exact Finset.single_le_sum (fun (i : Fin (2^n)) _ => Complex.normSq_nonneg (paperPhaseAmplitude n t i.val)) (Finset.mem_univ v)
 
 lemma average_peak_quadratic (r n : ℕ) [Fact (Nat.Prime r)]
-    (hodd : r%2=1) (hN : (2^n:ℕ) ≠ 0) (hNz : ((2^n:ℕ):ZMod r) ≠ 0) :
+    (hodd : r%2=1) (_hN : (2^n:ℕ) ≠ 0) (hNz : ((2^n:ℕ):ZMod r) ≠ 0) :
     (r:ℝ)*(1-Real.pi^2/36) ≤ ∑ k : Fin r,
       Complex.normSq (paperPhaseAmplitude n ((k.val:ℝ)/r) (reducedPeak r n k).val) := by
   have hr := (Fact.out : Nat.Prime r).pos
@@ -363,7 +363,7 @@ lemma average_peak_quadratic (r n : ℕ) [Fact (Nat.Prime r)]
   have hid : (r:ℝ) - Real.pi^2/(3*(r:ℝ)^2)*((r:ℝ)*((r:ℝ)^2-1)/12) =
       (r:ℝ)*(1-Real.pi^2/36) + Real.pi^2/(36*(r:ℝ)) := by
     field_simp
-    <;> ring
+    ; ring
   rw [hid] at hb
   exact le_trans (le_add_of_nonneg_right (by positivity)) hb
 end
@@ -538,7 +538,7 @@ lemma geometric_sextic (N : ℕ) (hN : 0<N) (t : ℝ) (ht : |(N:ℝ)*t| ≤ 1/2)
       peakPolynomial ((N:ℝ)*t) + w*z*((3-z)/9+w*z*(3-z)/45+(14+10*w^2)*z^2/945) := by
     dsimp [w,z,peakPolynomial]
     field_simp
-    <;> ring
+    ; ring
   rw [he] at hb'
   have hzpos : 0 ≤ 3-z := sub_nonneg.mpr hz3
   have hc : 0 ≤ w*z*((3-z)/9+w*z*(3-z)/45+(14+10*w^2)*z^2/945) := by
@@ -572,7 +572,7 @@ lemma polynomial_marginal (r : ℕ) (hr : 0<r) (hodd : r%2=1) :
       31*(r:ℝ)*Real.pi^6*w^3/423360 := by
     dsimp [w,marginalBound]
     field_simp
-    <;> ring
+    ; ring
   rw [hid]
   have h15 : 0 ≤ 15-Real.pi^2 := by linarith [pi_sq_le_ten]
   have h56 : 0 ≤ 56-5*Real.pi^2 := by linarith [pi_sq_le_ten]

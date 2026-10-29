@@ -14,7 +14,7 @@ lemma raw_peak_quadratic (r n : ℕ) (k : Fin r) (hodd : r%2=1) :
   have he : ((2^n:ℕ):ℝ)*((k.val:ℝ)/r-(reducedPeakRaw r n k:ℝ)/(2^n:ℕ)) =
       (2^n:ℕ)*(k.val:ℝ)/r - (reducedPeakRaw r n k:ℝ) := by field_simp
   rw [he, raw_residual r n k hodd] at h
-  convert h using 1 <;> ring
+  convert h using 1 ; ring
 
 lemma raw_reduced_mass_eq (r n : ℕ) (k : Fin r) :
     Complex.normSq (paperPhaseAmplitude n ((k.val:ℝ)/r) (reducedPeakRaw r n k)) =
@@ -42,7 +42,7 @@ lemma peak_mass_le_one (n : ℕ) (t : ℝ) (v : Fin (2^n)) :
   exact Finset.single_le_sum (fun (i : Fin (2^n)) _ => Complex.normSq_nonneg (paperPhaseAmplitude n t i.val)) (Finset.mem_univ v)
 
 lemma average_peak_quadratic (r n : ℕ) [Fact (Nat.Prime r)]
-    (hodd : r%2=1) (hN : (2^n:ℕ) ≠ 0) (hNz : ((2^n:ℕ):ZMod r) ≠ 0) :
+    (hodd : r%2=1) (_hN : (2^n:ℕ) ≠ 0) (hNz : ((2^n:ℕ):ZMod r) ≠ 0) :
     (r:ℝ)*(1-Real.pi^2/36) ≤ ∑ k : Fin r,
       Complex.normSq (paperPhaseAmplitude n ((k.val:ℝ)/r) (reducedPeak r n k).val) := by
   have hr := (Fact.out : Nat.Prime r).pos
@@ -63,7 +63,7 @@ lemma average_peak_quadratic (r n : ℕ) [Fact (Nat.Prime r)]
   have hid : (r:ℝ) - Real.pi^2/(3*(r:ℝ)^2)*((r:ℝ)*((r:ℝ)^2-1)/12) =
       (r:ℝ)*(1-Real.pi^2/36) + Real.pi^2/(36*(r:ℝ)) := by
     field_simp
-    <;> ring
+    ; ring
   rw [hid] at hb
   exact le_trans (le_add_of_nonneg_right (by positivity)) hb
 end

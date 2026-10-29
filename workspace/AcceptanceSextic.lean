@@ -56,7 +56,7 @@ lemma geometric_sextic (N : ℕ) (hN : 0<N) (t : ℝ) (ht : |(N:ℝ)*t| ≤ 1/2)
       peakPolynomial ((N:ℝ)*t) + w*z*((3-z)/9+w*z*(3-z)/45+(14+10*w^2)*z^2/945) := by
     dsimp [w,z,peakPolynomial]
     field_simp
-    <;> ring
+    ; ring
   rw [he] at hb'
   have hzpos : 0 ≤ 3-z := sub_nonneg.mpr hz3
   have hc : 0 ≤ w*z*((3-z)/9+w*z*(3-z)/45+(14+10*w^2)*z^2/945) := by
@@ -90,7 +90,7 @@ lemma polynomial_marginal (r : ℕ) (hr : 0<r) (hodd : r%2=1) :
       31*(r:ℝ)*Real.pi^6*w^3/423360 := by
     dsimp [w,marginalBound]
     field_simp
-    <;> ring
+    ; ring
   rw [hid]
   have h15 : 0 ≤ 15-Real.pi^2 := by linarith [pi_sq_le_ten]
   have h56 : 0 ≤ 56-5*Real.pi^2 := by linarith [pi_sq_le_ten]
