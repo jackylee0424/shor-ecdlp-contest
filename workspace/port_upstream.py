@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Port only added upstream Lean modules; preserve imports of protected modules.
 
-With --rounds 26, also apply the local round-count and decoder-layout adaptation.
+With --rounds N, apply the local round-count and decoder-layout adaptation.
 This intentionally overwrites the ported modules, so save local improvements
 before updating the upstream ref. Main.lean is managed separately.
 """
@@ -11,7 +11,7 @@ import re
 import subprocess
 
 
-def reduce_rounds(target):
+def reduce_rounds(target, rounds):
     """Adapt the eight round-dependent files, retaining the decoder's 56 cap."""
     names = ('FinalCertificate', 'FixedWord', 'RepeatEvent', 'ResourceCertificate',
              'UniformT', 'WindowBudget', 'WindowCounts', 'WindowSlots')
@@ -22,8 +22,8 @@ def reduce_rounds(target):
         source = source.replace('positions.length ≤ 56', 'positions.length ≤ TRIAL_CAP')
         source = re.sub(r'\b56\b', 'streamingRounds', source)
         source = source.replace('TRIAL_CAP', '56')
-        source = source.replace('806028979896', '374227740666')
-        source = source.replace('48194018992', '22375794532')
+        source = source.replace('806028979896', str(rounds * 14393374641))
+        source = source.replace('48194018992', str(rounds * 860607482))
         source = source.replace('batchedOuterPlan.layout', 'batchedOuterPlan.layoutForStreaming')
         source = source.replace('p.layout', 'p.layoutForStreaming')
         source = source.replace('OuterPlan.layout,', 'OuterPlan.layoutForStreaming,')
@@ -48,8 +48,8 @@ def reduce_rounds(target):
             # The original historical observation is false for the reduced entry.
             source = re.sub(r'/--[^/]*?-/\s*theorem batchedOuterPlan_exceeds_old_measurement_limit.*?\n(?=theorem batchedOuterPlan_measurements_fit)',
                             '', source, flags=re.S)
-        source = source.replace('streamingRounds-round', '26-round')
-        source = source.replace('of streamingRounds rounds', 'of 26 rounds')
+        source = source.replace('streamingRounds-round', f'{rounds}-round')
+        source = source.replace('of streamingRounds rounds', f'of {rounds} rounds')
         source = 'import ShorECDLP.Submission.Entrant.Streaming.Challenge.Rounds\n' + source
         path.write_text(source)
     (target / 'Challenge/Rounds.lean').write_text('''import ShorECDLP.Submission.«2607_13816».Challenge.Outer
@@ -58,7 +58,7 @@ namespace ShorECDLP.Paper2607_13816.ChallengeMigration
 open Quantum ShorECDLP.Challenge
 
 /-- Shared repetition count for the entry, decoder, resource and success proofs. -/
-def streamingRounds : Nat := 26
+def streamingRounds : Nat := ROUND_COUNT
 
 def OuterPlan.entryForStreaming (coefficients : List PointCoeff)
     (p : OuterPlan coefficients.length) : StraightEntry :=
@@ -77,7 +77,7 @@ def OuterPlan.layoutForStreaming {n : Nat} (p : OuterPlan n) : DecodeLayout :=
     by simp [streamingRounds]⟩
 
 end ShorECDLP.Paper2607_13816.ChallengeMigration
-''')
+'''.replace('ROUND_COUNT', str(rounds)))
 
 
 def main():
@@ -85,7 +85,7 @@ def main():
     parser.add_argument('--bench', type=Path, default=Path.home() / 'shorecdlp')
     parser.add_argument('--base', default='origin/master')
     parser.add_argument('--upstream', default='upstream/lamport/challenge-final-certificate')
-    parser.add_argument('--rounds', type=int, choices=(26, 56), default=56)
+    parser.add_argument('--rounds', type=int, choices=range(1, 57), default=56)
     args = parser.parse_args()
 
     def git(*argv):
@@ -106,9 +106,9 @@ def main():
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(source)
     print(f'Ported {len(files)} Lean modules from {git("rev-parse", args.upstream).strip()}')
-    if args.rounds == 26:
-        reduce_rounds(target)
-        print('Applied 26-round adaptation and added Challenge/Rounds.lean')
+    if args.rounds != 56:
+        reduce_rounds(target, args.rounds)
+        print(f'Applied {args.rounds}-round adaptation and added Challenge/Rounds.lean')
 
 
 if __name__ == '__main__':

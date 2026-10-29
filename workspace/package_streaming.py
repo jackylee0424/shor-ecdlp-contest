@@ -43,6 +43,18 @@ def main():
     args = parser.parse_args()
     entrant = args.bench / 'ShorECDLP/Submission/Entrant'
     source = args.source or entrant / 'Streaming'
+    rounds_source = source / 'Challenge/Rounds.lean'
+    rounds = re.search(r'def streamingRounds : Nat := (\d+)', rounds_source.read_text())[1] if rounds_source.exists() else '56'
+    if (source / 'Contributions/UniformAcceptance.lean').exists():
+        attribution = ('Our contribution: a uniform per-round acceptance bound of 0.546,\n'
+                       f'using finite Fourier moments; the entry uses {rounds} rounds.\n')
+    else:
+        attribution = (f'The entry uses {rounds} rounds with the upstream per-round\n'
+                       '0.163 acceptance bound.\n')
+    header = HEADER.replace(
+        'The round count is reduced from 56 to 26 using the upstream per-round\n'
+        '0.163 acceptance bound. The entry and decoder share streamingRounds.\n',
+        attribution + 'The entry and decoder share streamingRounds.\n')
     files = sorted(source.rglob('*.lean'))
     if not files:
         parser.error('Run workspace/port_upstream.py --rounds 26 first.')
@@ -97,7 +109,7 @@ def main():
         external = sorted({dep for mod in group for dep in imports[mod] if dep not in modules})
         if index:
             external.insert(0, f'ShorECDLP.Submission.Entrant.{names[index - 1]}')
-        output = '\n'.join('import ' + dep for dep in external) + '\n\n' + HEADER
+        output = '\n'.join('import ' + dep for dep in external) + '\n\n' + header
         for mod in group:
             short = mod.rsplit('.', 1)[1]
             output += f'\n/-! Upstream module: {mod} -/\nsection Port_{short}\n\n'

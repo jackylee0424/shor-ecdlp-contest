@@ -53,7 +53,10 @@ def main():
         row(f'1240 semiclassical h={h}, compact total-add target',1240+N+1,
             BITS*(h*7*2_114_708+CONTROL)+PHASE)
     # Use existing correction with deliberately disjoint banks.
-    row('1240 semiclassical, existing correction bank, h=1',1240+513+2725+N+1,
+    # Five endpoint words + 512 equality scratch/flag, accumulator infinity
+    # bit, two spare/control labels from Brief 06; keep core/banks disjoint.
+    disjoint_q = 1240+1+5*N+512+2+N+1
+    row('1240 semiclassical, disjoint correction bank, h=1',disjoint_q,
         BITS*(7*2_114_708+SINGLETON_CORRECTION+CONTROL)+PHASE)
     # Exact-route fallback upper bound on native nonlinear count is all records.
     # Still excludes compiler and control additions; exact 7S is unrecorded.
@@ -63,10 +66,9 @@ def main():
     row('2820 exact-line native ALL-RECORD upper proxy, semiclassical',2820+N+1,
         BITS*(exact_proxy+CONTROL)+PHASE)
     print('\nSemiclassical crossover T/add INCLUDING all overhead at 26 rounds:')
-    for q in (1754,3334,4992):
+    for q in (1754,3334,disjoint_q):
         print(q, float((F(BASELINE,q*ROUNDS)-PHASE)/BITS))
     p = F(163,1000)
-    threshold = 1-F(1,100)**F(1,26)  # display only; below use float
     threshold = 1-math.pow(.01,1/26)
     print('p=.163 success:',float(1-(1-p)**ROUNDS))
     print('26-round minimum p:',threshold,'per-round event loss allowance:',float(p)-threshold)
@@ -78,7 +80,7 @@ def main():
     print('Sufficient round bad mass if event loss <=4 sqrt(eps):',(slack/4)**2)
     print('Equal per-call initial-space bad masses, 28 / 464 calls:',
           (slack/4)**2/28,(slack/4)**2/464)
-    for q, calls in [(1768,28),(1754,464),(3334,464),(4992,464)]:
+    for q, calls in [(1768,28),(1754,464),(3334,464),(disjoint_q,464)]:
         print('M/add cap, Q,calls:',q,calls,(MEAS_CAP//26-464-q)//calls)
     # Epoch11's 8.7e-8 is an empirical/model estimate, not a bound.
     e=8.695712220905507e-8

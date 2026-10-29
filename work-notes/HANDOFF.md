@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 04 accepted; Brief 05 analysis complete; Brief 06 analysis complete)._
+_Last updated: 2026-10-29 by Codex (Brief 04 accepted; Brief 05 analysis complete; Brief 06 analysis complete; Brief 07 Gold audit complete)._
 
 ## Current best
 
@@ -20,9 +20,10 @@ _Last updated: 2026-10-29 by Codex (Brief 04 accepted; Brief 05 analysis complet
 | Agent | Since | Item | Output location |
 |---|---|---|---|
 | Codex | 2026-10-29 | Brief 08: uniform acceptance proof and round reduction | workspace/Acceptance*.lean; work-notes/experiments/2026-10-29-uniform-acceptance.md |
-| Codex | 2026-10-29 | Brief 07: Gold route inventory and certified compiler design (bench read-only) | docs/ECDLP-AI-GOLD.md; workspace/gold_route_inventory.py; workspace/gold_costs.py |
 
 ## Next up (unclaimed)
+
+- Brief 07 complete: `docs/ECDLP-AI-GOLD.md` inventories Gold/ecdlp routes, source→Straight design and conditional architecture/error budgets; calculators/index in `workspace/gold_{costs,route_inventory}.py` and `gold_artifacts.json`. **Exact** 2841/2820 line exists (sealed2820), but no inspected full channel/total-point theorem. Small routes remain approximate with unproved uniform failure bounds; 1401/1402 resource lemmas use forbidden native axioms. Start with one exact source-bound Gold AND/carry cell → Straight + kernel coherent run/count/support/record theorem, then parametric adder and replay scaling. No bench/donor edits or builds; no new entrant/score.
 
 - Brief 06 complete: `docs/ECDSAFAIL-TRICKS.md` catalogues 23 tricks across all 24 requested entries; `workspace/ecdsafail_tricks_costs.py` checks archived score products and small exact gate identities. New concrete proposal: replace correction equality clean chains with dirty-ancilla MCX borrowing the other endpoint, removing 511 labels for +12,807,424 T/round (3421 Q, projected Q×T 1,281,372,269,953,490). With Brief 05's 310 loans: 3111 Q, projected 1,165,258,442,509,590; both await Lean integration. Binary 464-add/26-round architecture has conditional estimates only: no inspected fast entry proves exact total addition, and control/exception/record budgets can erase the headline gains. Bench and external repos remained read-only; no builds, score or submission.
 
