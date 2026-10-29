@@ -55,9 +55,10 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 
 | # | Lever | Gain | Status | Owner / evidence |
 |---|---|---|---|---|
-| E1 | Asymmetric axis widths with the `wrappedShift` decoder (right axis ≈ 203–210 bits under the 2^55.8 candidate budget) | up to ≈ 3–4 windows ≈ −9 to −12 % | **in flight: analysis** | brief 14b → `docs/FEWER-WINDOWS.md` |
-| E2 | Sharper nearestPair success lemma (t < 263) | only counts once a whole window drops | **in flight: analysis** | brief 14b |
-| E3 | Window-width re-packing under the 983,040-row cap | window count vs rows | **in flight: analysis** | brief 14b |
+| E1 | Asymmetric axes with `wrappedShift`; exact minimum right width is 203 | resource-only 263/203 projection −12.121%, but single-trial success ≈0.774 | **dead: cannot certify 99%** | brief 14b: exact accepted set and candidate budget in `docs/FEWER-WINDOWS.md`; right side is a nearest-bin event, not a wide window |
+| E2 | Averaged rounding-window lemma for `nearestPair` at 262/262 | −0.000003% from 524 phases; no window removed | **open but below submission policy (L)** | brief 14b: projected uniform lower ≈0.993668; first repacked window cut needs 258/258, where success fails |
+| E3 | Row-optimal window re-packing under 983,040 rows | 262/262 still has 33 additions; 263/203 has 29 | **done: analysis** | exact DP/counts: `workspace/fewer_windows.py`; assignments and risks: `docs/FEWER-WINDOWS.md` |
+| E5 | Width-specialize the correction QROM instead of aliasing 15-bit windows through the 32,768-row tree | −0.158783% at 263/263; −0.176428% stacked with 262/262 | **open, M/L; below submission policy** | exact conditional law `91·(rows−1)+85,848`; needs new trees/routes/coherence/resource facts (`docs/FEWER-WINDOWS.md`) |
 | E4 | Verified generic gate cancellation over more literal blocks (extend dadon's pass beyond the 7 EEA literals) | unpriced | **open** | dadon `3e53f42` note: cancellation procedure proved correct for X/CX/CCX |
 
 ## D. Process

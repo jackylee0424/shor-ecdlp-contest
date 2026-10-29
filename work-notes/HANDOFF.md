@@ -1,11 +1,12 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 13 stopped at C8 clean-lane feasibility gate; `shorecdlp-m` untouched)._
+_Last updated: 2026-10-29 by Codex (Brief 14b completed read-only fewer-window analysis; `shorecdlp-m` untouched)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
+| frontier dadon 3e53f42 | 855 | 16,901,720,498 | **14,450,971,025,790** | bench commit `8513c15`; reproduced `entrants/20261029-1524-frontier-3e53f42` |
 | frontier ff1bf8d | 855 | 86,239,836,030 | **73,735,059,805,650** | frontier commit `93051d2`; reproduced before Brief 13 |
 | rounds6 (current bench Entrant) | 3,932 | 86,360,247,846 | **339,568,494,530,472** | official benchmark accepted, full kernel replay, 217s; `entrants/20261029-1215-rounds6` |
 | streaming26 (previous accepted entrant) | 3,932 | 374,227,740,666 | **1,471,463,476,298,712** | official benchmark accepted, full kernel replay, 232s; `entrants/20261029-1149-streaming26` |
@@ -24,9 +25,16 @@ _Last updated: 2026-10-29 by Codex (Brief 13 stopped at C8 clean-lane feasibilit
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
-| Codex | 2026-10-29 | Brief 14: full decoder accepted-set mass and five-round feasibility (read-only benches) | `docs/FIVE-ROUND.md`; `workspace/five_round_mass.py` |
 
 ## Next up (unclaimed)
+
+- Brief 14b supersedes Brief 14 and is complete: `wrappedShift` first fits at rightBits=203 and
+  its 263/203 packing removes four signed additions (resource-only score 12,699,380,930,760), but
+  its one-bin right event caps `d=1` success near 0.773695, so it is dead for a single 99% trial.
+  A 262/262 averaged `nearestPair` proof is plausible at ≈0.993668 but removes no window; stacked
+  with specialized 15-bit lookup trees it is only −0.176428%. Full accepted-set, row assignments,
+  exact T formulas and proof-risk table: `docs/FEWER-WINDOWS.md`; calculator:
+  `workspace/fewer_windows.py`. No bench/build/score/snapshot/submission/commit.
 
 - Brief 13 stopped at its mandatory feasibility gate. Three of the eight replacement sites
   (`division multiply-to-work`, `multiplication recompute`, `multiplication unrecompute`) expose
