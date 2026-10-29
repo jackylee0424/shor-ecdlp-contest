@@ -221,6 +221,27 @@ theorem optimizedCoefficientProgram_run (n start T : Nat)
       exact ⟨computeControl_wellFormed _ _ _ _ indexedStepProduction_layout.coefficientAdd,
         restoreLatestPaperTBoundary_wellFormed _ 256 indexedStepProduction_layout.tBoundary⟩)
 
+theorem productionCoefficientBlockSources (T : Nat) :
+    coefficientBlockSources indexedStepProductionRegisters 256
+      (certifiedActiveWindows 256 T).coefficient = [
+        .unitary productionEPrefix .done,
+        coefficientPrefixAdaptive
+          (indexedStepProductionRegisters.coefficient
+            (certifiedActiveWindows 256 T).coefficient)
+          (certifiedActiveWindows 256 T).coefficient.start
+          (certifiedActiveWindows 256 T).coefficient.stop .sub false .work2,
+        .unitary productionEMiddle .done,
+        coefficientPrefixAdaptive
+          (indexedStepProductionRegisters.coefficient
+            (certifiedActiveWindows 256 T).coefficient)
+          (certifiedActiveWindows 256 T).coefficient.start
+          (certifiedActiveWindows 256 T).coefficient.stop .add true .work2,
+        .unitary productionESuffix .done] := by
+  rfl
+
+attribute [local irreducible] productionEPrefix productionEMiddle productionESuffix
+  cancelBoundaryCCX
+
 set_option maxRecDepth 100000 in
 set_option maxHeartbeats 4000000 in
 theorem optimizedCoefficientProgram_tCount (n start T : Nat)
@@ -261,10 +282,10 @@ theorem optimizedCoefficientProgram_tCount (n start T : Nat)
   rw [sequenceProgram_tCount n (optimizedCoefficientSegments n T) sources read
     hsegments start history]
   rw [← coefficientBlockSources_eq r 256 w]
+  rw [productionCoefficientBlockSources T]
   show (sequenceCircuit sources).tCount + 84 = _
   ·
-    simp only [sequenceCircuit, productionEPrefix,
-      productionEMiddle, productionESuffix, sources, r, w]
+    simp only [sequenceCircuit, sources, r, w]
     change (ShorECDLP.tCount (cancelBoundaryCCX productionEPrefix) +
         ((coefficientPrefixAdaptive _ _ _ .sub false .work2).tCount +
           (ShorECDLP.tCount productionEMiddle +

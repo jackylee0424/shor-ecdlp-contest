@@ -23,6 +23,7 @@ _Last updated: 2026-10-29 by Codex (Brief 10 stopped at exact measured-comparato
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
+| Codex | 2026-10-29 | Brief 13: exact fast modular multiplier feasibility and, if viable, integration on frontier ff1bf8d | `docs/MUL-PLAN.md`; `workspace/Mul*.lean`; `workspace/mul_*.py`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 
 ## Next up (unclaimed)
 

@@ -43,7 +43,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | C7a | Greedyfrog-shaped EEA: top-aligned values, so the boundary is a fixed lane (BitWonka/SnehalRaj/gopikannappan) | ≈ 2.5–3.0e13 | **open, XL research** | `docs/ECDSAFAIL-855.md` L4: inexact today (sampled windows, truncated decode) |
 | C7b | Bernstein–Yang divstep walk (odinfree Lilypad-G, ~0.30M Toffoli/walk vs 15.9M/bench wrapper) | ≈ 1.2–2.1e13 | **open, XL research** | ECDSAFAIL-855 L5: needs the iteration-bound proof (590 vs 532 ticks), a width envelope, and the run cap |
 | C7c | Why the bench EEA is ~30× dearer | — | **diagnosed** | ~57 % of EEA T locates data-dependent register boundaries on every microstep; both ecdsa.fail families avoid it |
-| C8 | **Exact modp_ft-style multiplier**: uncontrolled signed-digit Horner + merged pseudo-Mersenne fold, for the 6 multiplies + 2 squares | **≈ −10 % T → 6.6–6.7e13** | **open, L: the only bankable big lever** | ECDSAFAIL-855 L1/L2 (600–1,000 vs 4,344 Toffoli/bit). First check that ~70 clean lanes are free at each multiply site. Complementary to brief 12 (which found no cell) |
+| C8 | **Exact modp_ft-style multiplier**: uncontrolled signed-digit Horner + merged pseudo-Mersenne fold, for the 6 multiplies + 2 squares | **≈ −10 % T → 6.6–6.7e13** | **in flight: brief 13 (Daybreak, `~/shorecdlp-m`)** | ECDSAFAIL-855 L1/L2 (600–1,000 vs 4,344 Toffoli/bit). First check that ~70 clean lanes are free at each multiply site. Complementary to brief 12 (which found no cell) |
 | C9 | Measure λ away to drop one square call | ≈ −1.5 % | **open, M** | ECDSAFAIL-855 L3 |
 | C9b | Leapfrog flat square (BitWonka `29c8560`) | subsumed by C8 | **merged into C8** | ECDSAFAIL-855 |
 | C13 | Interval cells keep the running mask live between passes; junk parking turns masked ladders into plain ones (BitWonka `954016d`) | unpriced | **handed to brief 12** | ECDSAFAIL-855 BitWonka subsection |
@@ -58,6 +58,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | D1 | Build on the promoted frontier and declare dependencies | **policy** | competitors merge promoted entries within an hour; sub-0.05 % edges are short-lived |
 | D2 | Separate bench copies per concurrent builder (`workspace/make_bench_copy.sh`) | **policy** | never two builders in one checkout |
 | D3 | Codex model for this domain | **policy** | Sol gets cyber-flagged; use Daybreak Blue (`docs/ENVIRONMENT.md`) |
+| D4 | **Submit only a cut of more than 10 % vs the leader at submission time** (human decision, 2026-10-29) | **policy** | smaller wins are snapshotted and stacked, not submitted. Today's bar: Q×T < 66,361,553,825,085 |
 
 ## Review (2026-10-29)
 
