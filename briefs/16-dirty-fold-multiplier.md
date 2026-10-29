@@ -5,8 +5,8 @@ sites have only 25 proved-clean lanes; "What would reopen C8"), `docs/ECDSAFAIL-
 
 ## Base and bench
 
-The leader is ArthurOstapenko `60e5072` (bench commit `b46591c`): **single trial**, 855 qubits, Q×T 14,351,855,116,590, 33 corrected windows. Your bench is
-**`~/shorecdlp-m`** (clean at `b46591c`). Prefix every formal-tools command with `BENCH=/home/gitzard/shorecdlp-m`. Don't touch `~/shorecdlp` (brief 15) or
+The leader is dadon `c6a88fc` (bench commit `c13a293`; 263-bit left, 224-bit physical right rounded to a 203-bit wrappedShift word, 1 direct load + 30 corrected windows): **single trial**, 855 qubits, Q×T 13,137,279,297,120 (855 × 15,365,238,944); submission bar for the whole stack: < 11,823,551,367,408. Your bench is
+**`~/shorecdlp-m`** (clean at `c13a293`). Prefix every formal-tools command with `BENCH=/home/gitzard/shorecdlp-m`. Don't touch `~/shorecdlp` (brief 15) or
 `~/shorecdlp-c` (restack). Re-derive the call-site inventory on this base first: the single-trial entrant may differ from the streaming base brief 13 audited.
 
 ## Goal
@@ -16,10 +16,10 @@ correct for all inputs with a worst-case count, **fitting the 25-lane sites** by
 (`workspace/flag855-wip/Dirty/DirtyMCX.lean`) and the bench measured-erasure lemmas. Qubits must stay at 855. Use a hybrid if it helps: the fast cell at the
 68–69-lane sites and a dirty-fold variant at the 25-lane sites.
 
-Steps: (1) **gate:** redo the clean-lane inventory on `b46591c` and price the hybrid and dirty-fold designs exactly (`docs/MUL-PLAN.md` §single-trial). Stop if the best
+Steps: (1) **gate:** redo the clean-lane inventory on `c13a293` and price the hybrid and dirty-fold designs exactly (`docs/MUL-PLAN.md` §single-trial). Stop if the best
 exact design saves < 3 % total T. (2) Prove the multiplier (correctness mod p, clean donors/scratch, well-formedness, counts, support). (3) Swap it in and redo the
-window/program resource chain. (4) Deliver as `stack/30-fast-multiplier/` (`apply.sh` idempotent on a fresh `b46591c`, `src/`, `PATCH.md`, `ENABLED` once it scores).
-Validate: reset to `b46591c`, run `apply.sh`, then `BENCH=... formal-tools/{build,axioms,boundary,score}.sh`.
+window/program resource chain. (4) Deliver as `stack/30-fast-multiplier/` (`apply.sh` idempotent on a fresh `c13a293`, `src/`, `PATCH.md`, `ENABLED` once it scores).
+Validate: reset to `c13a293`, run `apply.sh`, then `BENCH=... formal-tools/{build,axioms,boundary,score}.sh`.
 
 ## Submission policy
 

@@ -22,9 +22,11 @@ _Last updated: 2026-10-29 by Codex (Brief 14b completed read-only fewer-window a
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 15: stack patches 20 (width-specialized 15-bit lookup trees), then 21 (262/262 averaged precision proof) on leader `60e5072` / bench `b46591c` | `stack/20-lookup-trees/`; `stack/21-precision262/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
+| Codex | 2026-10-29 | Brief 16: exact fast multiplier with dirty-borrowed fold on leader `60e5072` / bench `b46591c` | `workspace/`; `stack/30-fast-multiplier/`; `/home/gitzard/shorecdlp-m/…/Entrant/` only if the 3% gate passes |
 
 ## Next up (unclaimed)
 

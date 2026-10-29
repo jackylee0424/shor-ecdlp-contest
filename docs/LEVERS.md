@@ -3,7 +3,7 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain" (updated 2026-10-29 15:24): leader **dadon `3e53f42` (bench `8513c15`): 855 × 16,901,720,498 = 14,450,971,025,790**, a **single trial** at 263/263 bits with the `nearestPair` decoder (1 direct load + 33 corrected windows), with verified EEA literal cancellation. Reproduced locally: `entrants/20261029-1524-frontier-3e53f42`. **Submission bar (> 10 %): Q×T < 13,005,873,923,211.** Each window ≈ 2.9 % of T; EEA ≈ 87 % of each window.
+Baseline for "gain" (updated 2026-10-29 16:20): leader **dadon `c6a88fc` (bench `c13a293`): 855 × 15,365,238,944 = 13,137,279,297,120**: a single trial, 263-bit left, 224-bit physical right rounded to a 203-bit `wrappedShift` word, 1 direct load + 30 corrected windows, with EEA literal cancellation. **Submission bar (> 10 %): Q×T < 11,823,551,367,408.** Each window ≈ 3.3 % of T.
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
