@@ -77,7 +77,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | D3 | Codex model for this domain | **policy** | Sol gets cyber-flagged; use Daybreak Blue (`docs/ENVIRONMENT.md`) |
 | D5 | Public-effort watch (checked 2026-10-29 ~14:30) | **policy** | Upstream VerifiedQC: nothing new since 2026-10-28 (`streaming-dev` #554). Leaderboard: ArthurOstapenko `8dca04a` was validating. If it promotes, rebase the stack on it before submitting. `lamport/streaming-certificate-docs` documents the five-word correction trade-off (superseded by B1) |
 | D6 | **Stacking plan** | **plan** | brief 12 (EEA, `~/shorecdlp`) + brief 13 (multiplier, `~/shorecdlp-m`) → then C9 (drop one square) on top of 13 in the same checkout → merge the 12 and 13 Entrant edits in a fresh checkout at the then-leader → submit only if > 10 % |
-| D4a | **Exception (human, 2026-10-29):** submit brief 15's stack when it lands, if strictly below the leader and verified | **policy** | one-off override of D4 |
+| D4a | **Exception (human, 2026-10-29):** submit **brief 17** (merge, stack patch 10) when it lands, if strictly below the leader and verified; replaces the earlier brief-15 exception | **policy** | one-off override of D4 |
 | D4 | **Submit only a cut of more than 10 % vs the leader at submission time** (human decision, 2026-10-29) | **policy** | smaller wins are snapshotted and stacked, not submitted. Today's bar: Q×T < 66,361,553,825,085 |
 
 ## Review (2026-10-29)

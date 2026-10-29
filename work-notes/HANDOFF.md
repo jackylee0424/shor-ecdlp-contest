@@ -22,6 +22,7 @@ _Last updated: 2026-10-29 by Codex (Brief 16 stopped at the single-trial exact-c
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 15: stack patches 20 (width-specialized 15-bit lookup trees), then 21 (one fewer right window if exact success clears 99%) on leader `c6a88fc` / bench `c13a293` | `stack/20-lookup-trees/`; `stack/21-right208/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
