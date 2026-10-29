@@ -1,0 +1,14 @@
+import Mathlib
+#check Fin.sum_univ_eq_sum_range
+#check Fin.sum_univ_succ
+#check Finset.sum_range
+#check Equiv.sum_comp
+#check Equiv.ofBijective
+#check Fintype.bijective_iff_injective_and_card
+#check Complex.normSq_natCast
+#check Finset.single_le_sum
+#check Function.Bijective.sum_comp
+#check Fintype.sum_bijective
+#check Finset.sum_erase_add
+#check ZMod.natCast_self
+#check ZMod.pow_card_sub_one_eq_one

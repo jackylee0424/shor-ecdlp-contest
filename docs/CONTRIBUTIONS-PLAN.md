@@ -1,8 +1,8 @@
 # Contributions on top of the upstream streaming certificate
 
-2026-10-29, Brief 05. **First prove an average-peak acceptance bound; next borrow arithmetic scratch during correction.** The former has a concrete mathematical route to six rounds; the latter has an explicit 3,622-label allocation. Together their conditional score is **312,796,817,698,212**, 4.70× better than Brief 04's projected 26-round score. Neither improvement has been implemented or checked in Lean here.
+2026-10-29, Brief 05. **First prove an average-peak acceptance bound; next borrow arithmetic scratch during correction.** The former has a concrete mathematical route to six rounds; the latter has an explicit 3,622-label allocation. Together their conditional score is **312,796,817,698,212**, 4.70× better than Brief 04's accepted 26-round score. Neither improvement has been implemented or checked in Lean here.
 
-This was source analysis and Python only. No bench edits, builds, `lake`, score, or submission were run. Baseline for comparisons: **3,932 Q × 374,227,740,666 T = 1,471,463,476,298,712**, 26 rounds, 256/208 Fourier bits, wrapped-shift decoder. Brief 04 owns verification of that baseline.
+This was source analysis and Python only. No bench edits, builds, `lake`, score, or submission were run by Brief 05. Baseline for comparisons: **3,932 Q × 374,227,740,666 T = 1,471,463,476,298,712**, 26 rounds, 256/208 Fourier bits, wrapped-shift decoder. Brief 04 recorded official acceptance during this analysis (`entrants/20261029-1149-streaming26`); that receipt, rather than an independent replay here, establishes the baseline.
 
 Source pins: upstream `b46e3371587f2f947c833b665b2636a863b7d85f`; protected `origin/master` `5fbad2ca7d821393335fb7e659b4f62d30093a02`. Below, `C/`, `W/`, `O/`, `A/`, `E/` abbreviate `ShorECDLP/Submission/2607_13816/{Challenge,Window,OrderFinding,Arithmetic,EEA}/` at that upstream commit. Protected files have the same contents at the pinned master. Read them with:
 
@@ -209,7 +209,7 @@ The **3,784,382-T** correction is `14*7*32767 + 16*35826`. Each 513-bit transpos
 
 **AND erasure.** The prior `Gold/source/arithmetic.py:and_uncompute` and C77 `ctx_holds.rs` match the benchmark's measurement-uncompute idea. `E/DecoderPrimitiveCounts.measuredAndErase_primitive` already prices erase as **0 T + one measurement**, with CZ implemented by H/CX/H. Both coordinate/correction QROM trees already use one paid CCX per internal node and a free measured erase. Applying that same transformation to those nodes saves **zero** additional T.
 
-There is an actual unused opportunity in correction's ordinary unitary equality chains. `C/RegisterEquality.registerEqualAdaptive` and `endpointTranspositionAdaptive/Program` already implement and prove measured alternatives, while `BatchedEndpoint.batchOps` lowers `.swap` as `ordinaryOp (batchOpCircuit ...)`. Replacing it saves **511 CCX / equality**, 64 equalities/window, hence **228,928 T/window** and **32,704 extra measurements/window**. Over 26 rounds it adds **23,807,488** records, comfortably within the current cap's ~25.10-billion margin. New cursors, producer support/slots and coherent batch composition are still required. This is a compositional improvement using an existing primitive, not a novel AND-erasure theorem.
+There is an actual unused opportunity in correction's ordinary unitary equality chains. `C/RegisterEquality.registerEqualAdaptive` and `endpointTranspositionAdaptive/Program` already implement and prove measured alternatives, while `BatchedEndpoint.batchOps` lowers `.swap` as `ordinaryOp (batchOpCircuit ...)`. Replacing it saves **511 CCX / equality**, 64 equalities/window, hence **228,928 T/window** and **32,704 extra measurements/window**. Over 26 rounds it adds **23,808,512** records, comfortably within the current cap's ~25.10-billion margin. New cursors, producer support/slots and coherent batch composition are still required. This is a compositional improvement using an existing primitive, not a novel AND-erasure theorem.
 
 **Phase-only carries and holds.** Gold `compare_phase_exact` emits a comparison's measured phase directly; C77 `ctx_holds.rs` shares repeated AND values with a clean donor, saving **7(k−1) T** for k identical products plus one measured cleanup. Apply these only where EEA control/repair logic needs a phase or where source-level control forms are provably repeated. EEA length and interval predicates that steer later steps still need usable classical/quantum values; they cannot all be replaced by phases. Start in `C/{MeasuredStep,MeasuredWrapper,LengthRefresh}`, `E/{MeasuredStep,MeasuredSchedule}` and the `A/Gidney*` arithmetic they call. Count the selected cell in the actual 1,620-step schedule before claiming any fraction of the 86.66% wrapper cost. Conditional 10%/25% wrapper reductions save **1,247,345,176 / 3,118,362,940 T per round**. C77's archived 10,502-CCX/CCZ saving is for its different point-add stream and is not evidence for those rates here.
 
@@ -219,7 +219,9 @@ Prior source locations inspected for this brief: `/mnt/c/code/secp256k1-point-ad
 
 ## 4. Concrete implementation briefs for the top two
 
-### Brief 06 outline: uniform averaged peak mass, six streaming rounds
+Brief 04 also discovered that the official source gate rejects untracked or unreachable Lean files. The logical modules below should be developed in a lab-side modular tree, then folded into the existing tracked Entrant files with `workspace/package_streaming.py`, as Brief 04 did. Adding new physical files under Entrant requires the human/orchestrator to track them first; this analysis does not authorize Git metadata writes or assume the gate will accept untracked modules. Existing modular source is preserved in `entrants/20261029-1140-streaming26-modular`.
+
+### Outline A: uniform averaged peak mass, six streaming rounds
 
 **Deliverable:** unchanged 3,932-Q circuit body, six repetitions, wrappedShift 256/208 layout, T≤86,360,247,846, measurements=**5,163,644,892**, ≥99% success for every nonzero secret. First milestone is a kernel-checked standalone mass theorem; do not modify the repetition count until it exists.
 
@@ -237,7 +239,7 @@ Proof obligations: (i) analytic polynomial minorant with no native axioms; (ii) 
 
 Acceptance checks after Brief 04 relinquishes the bench: build the new theorem chain, inspect allowed axioms, boundary check, official score and snapshot. Stop if the exact polynomial/moment bound falls below the six-round threshold; record a proved seven/eight-round improvement rather than weakening the claim informally.
 
-### Brief 07 outline: borrow 310 arithmetic labels during correction
+### Outline B: borrow 310 arithmetic labels during correction
 
 **Deliverable:** preserve the baseline translation and T, reduce complete support to **3,622**, then stack on the accepted mass improvement if available. Use the explicit involution from `workspace/streaming_t_breakdown.py` as the allocation specification.
 

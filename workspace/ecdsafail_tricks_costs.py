@@ -88,6 +88,33 @@ def controlled_translation_check():
                     assert (a, dummy) == ((value+control*offset) % order, 0)
 
 
+def dirty_mcx_check():
+    """Exhaust dirty-chain action AND donor restoration at k=3..6.
+
+    Transcribed from lowq-lineage/bk666/src/point_add/mask.rs::mcx_dirty.
+    This is discovery validation, not a Lean proof for arbitrary k.
+    """
+    for k in range(3, 7):
+        target = k
+        dirty = list(range(k+1, 2*k-1))
+        gates = []
+        for _ in range(2):
+            gates.append((k-1, dirty[k-3], target))
+            for i in reversed(range(1, k-2)):
+                gates.append((i+1, dirty[i-1], dirty[i]))
+            gates.append((0, 1, dirty[0]))
+            for i in range(1, k-2):
+                gates.append((i+1, dirty[i-1], dirty[i]))
+        assert len(gates) == 4*(k-2)
+        for word in range(1 << (2*k-1)):
+            out = word
+            for a, b, t in gates:
+                if (out >> a) & (out >> b) & 1:
+                    out ^= 1 << t
+            expected = word ^ ((1 << target) if word & ((1 << k)-1) == (1 << k)-1 else 0)
+            assert out == expected
+
+
 def main():
     rows = archived_rows()
     print('ARCHIVED metrics: status | qubits | MEAN Toffoli (not worst-case T)')
@@ -95,6 +122,7 @@ def main():
         print(ident, *rows[ident], sep=' | ')
     affine_check()
     controlled_translation_check()
+    dirty_mcx_check()
     print('\nSmall algebra checks passed: affine identity; dummy-point control; reflections', reflection_check())
     print('PORT Q*T:', PORT, 'FRONTIER:', FRONTIER)
     print('EEA T/round:', EEA, 'fraction:', EEA/T_ROUND)
@@ -102,11 +130,22 @@ def main():
     print('Controlled-add swap overhead:', CONTROL_T)
     print('Singleton batch correction T:', BATCH_CORRECTION)
     print('C77 static old-stream proxy:', C77_STATIC)
+    dirty_compare_delta = 16*4*7*(4*(513-2)-(2*513-3))
+    assert dirty_compare_delta == 457_408
+    dirty_round = T_ROUND+28*dirty_compare_delta
+    print('\nExact-dirty-comparator design (pending Lean):')
+    for q in (3421, 3111):
+        score = q*26*dirty_round
+        print('Q, T/round, T/26, score, port gain:', q, dirty_round, 26*dirty_round, score, PORT/score)
     print('r=26 success with p=.163:', 1-Fraction(837, 1000)**26)
     print('r=26 decimal:', float(1-Fraction(837, 1000)**26))
-    print('\nConditional all-input exact core budgets: Q excludes wrapper, includes total correction workspace')
+    print('\nConditional all-input exact core budgets: tabulated Q includes wrapper and correction workspace')
     print('label | Q | T/add | T/round | T/26 | Q*T | improvement vs port | vs frontier')
     scenarios = [
+        # Retain proved paper arithmetic, specialize both query trees to one leaf.
+        # This is a source-derived budget for a new compiler, not an instantiated certificate.
+        ('Protected arithmetic singleton design; existing support bound', 3932+N+1,
+         514_030_776-10*(2**15-1)*7-14*(2**15-1)*7+CONTROL_T),
         # No row is a proved exact point-add bound. h is a hardening multiplier.
         ('C77 h=1 + existing singleton correction; disjoint banks', 4106, C77_STATIC+BATCH_CORRECTION+CONTROL_T),
         ('C77 h=2 + existing singleton correction; disjoint banks', 4106, 2*C77_STATIC+BATCH_CORRECTION+CONTROL_T),

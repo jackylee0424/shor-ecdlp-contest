@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 04 accepted; Briefs 05/06 remain in flight)._
+_Last updated: 2026-10-29 by Codex (Brief 04 accepted; Brief 05 analysis complete; Brief 06 analysis complete)._
 
 ## Current best
 
@@ -19,10 +19,18 @@ _Last updated: 2026-10-29 by Codex (Brief 04 accepted; Briefs 05/06 remain in fl
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 06: mine ecdsa.fail low-qubit tricks; bench read-only, no builds | docs/ECDSAFAIL-TRICKS.md; workspace/ecdsafail_tricks_costs.py |
-| Codex | 2026-10-29 | Brief 05: quantify support, acceptance and arithmetic levers (bench read-only) | docs/CONTRIBUTIONS-PLAN.md; workspace/round_mass.py; workspace/streaming_t_breakdown.py |
+| Codex | 2026-10-29 | Brief 08: uniform acceptance proof and round reduction | workspace/Acceptance*.lean; work-notes/experiments/2026-10-29-uniform-acceptance.md |
+| Codex | 2026-10-29 | Brief 07: Gold route inventory and certified compiler design (bench read-only) | docs/ECDLP-AI-GOLD.md; workspace/gold_route_inventory.py; workspace/gold_costs.py |
 
 ## Next up (unclaimed)
+
+- Brief 06 complete: `docs/ECDSAFAIL-TRICKS.md` catalogues 23 tricks across all 24 requested entries; `workspace/ecdsafail_tricks_costs.py` checks archived score products and small exact gate identities. New concrete proposal: replace correction equality clean chains with dirty-ancilla MCX borrowing the other endpoint, removing 511 labels for +12,807,424 T/round (3421 Q, projected Q×T 1,281,372,269,953,490). With Brief 05's 310 loans: 3111 Q, projected 1,165,258,442,509,590; both await Lean integration. Binary 464-add/26-round architecture has conditional estimates only: no inspected fast entry proves exact total addition, and control/exception/record budgets can erase the headline gains. Bench and external repos remained read-only; no builds, score or submission.
+
+- Brief 05 complete: `docs/CONTRIBUTIONS-PLAN.md` ranks the next contributions and specifies two implementation outlines.
+  Proposed uniform Fourier-peak/moment proof reaches p≥0.546 → six rounds (not Lean-checked); explicit correction-only
+  scratch reallocation reaches 3,622 Q (semantic proof pending), combined conditional Q×T=312,796,817,698,212.
+  Scripts: `workspace/round_mass.py`, `workspace/streaming_t_breakdown.py`. Existing 16/π⁴≈0.164255716 still needs
+  26 rounds; ~870 Q requires a new correction algorithm, not just label reuse. EEA is 86.661% of T. Bench untouched.
 
 1. (done) Baseline scored: accepted, 1m45s warm `yukon run`.
 2. Completed Brief 02 map: `docs/CODEBASE-MAP.md` covers 345 important modules, including all protected migration modules.
