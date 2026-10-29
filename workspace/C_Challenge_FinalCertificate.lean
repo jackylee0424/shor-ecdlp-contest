@@ -21,7 +21,7 @@ theorem actualCompiledRepeat_success_of_round (Q : Point) (hQ : order • Q=0) (
       (ket zeroBasisState)) :
     (99:ℝ)/100 ≤ Instrument.bornMass
       ((((batchedOuterPlan.repeat streamingRounds 0).instantiate (readConstant coefficientAt Q) Fin.elim0).run).filter
-        (fun b => (verifiedCandidate batchedOuterPlan.layoutForStreaming Q b.history).isSome)) (ket zeroBasisState) := by
+        (fun b => (verifiedCandidate (OuterPlan.layoutForStreaming batchedOuterPlan) Q b.history).isSome)) (ket zeroBasisState) := by
   rw [actualCompiledRepeat_verified_mass Q hQ hn]
   have hm := independentRetrySuccessProbability_mono streamingRounds (actualRoundAcceptedMass_le_one Q hQ) h
   have hnum : (99:ℝ)/100 ≤ independentRetrySuccessProbability ((546:ℝ)/1000) streamingRounds := by
@@ -41,7 +41,7 @@ theorem streamingRound_success (Q : Point) (d : Nat) (hn : Q≠0) (hd : Q=d • 
 theorem streamingEntry_success (Q : Point) (d : Nat) (hn : Q≠0) (hd : Q=d • G) :
     (99:ℝ)/100 ≤ Instrument.bornMass
       ((streamingEntry.instantiate Q).run.filter
-        (fun b => (verifiedCandidate batchedOuterPlan.layoutForStreaming Q b.history).isSome))
+        (fun b => (verifiedCandidate (OuterPlan.layoutForStreaming batchedOuterPlan) Q b.history).isSome))
       (ket zeroBasisState) := by
   rw [streamingEntry_instantiate]
   exact actualCompiledRepeat_success_of_round Q (publicPoint_order Q d hd) hn
@@ -49,6 +49,6 @@ theorem streamingEntry_success (Q : Point) (d : Nat) (hn : Q≠0) (hd : Q=d • 
 
 /-- Unconditional protected certificate for the actual fixed streaming submission. -/
 theorem streamingEntry_certificate_unconditional :
-    Certificate officialLimits batchedOuterPlan.layoutForStreaming streamingEntry streamingBounds :=
+    Certificate officialLimits (OuterPlan.layoutForStreaming batchedOuterPlan) streamingEntry streamingBounds :=
   streamingEntry_certificate streamingEntry_success
 end ShorECDLP.Paper2607_13816.ChallengeMigration.Dirty

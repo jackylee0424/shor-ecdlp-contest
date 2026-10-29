@@ -74,9 +74,9 @@ theorem sharedYNegateProgram_slots (w : OddWindow) (start : Nat) :
   exact yNegateProgram_slots_le start
 
 theorem batchedWindowCore_slots (w : OddWindow) (start : Nat) :
-    (batchedWindowCore w start).2.gateSlots≤2683845980 := by
+    (batchedWindowCore w start).2.gateSlots≤2683911324 := by
   have h := sequenceProgram_slots_le 983040 (batchedWindowSegments w)
-    ([1500000000,26372,1183793236,26372] : List Nat) (by
+    ([1500000000,26372,1183858580,26372] : List Nat) (by
       unfold batchedWindowSegments
       refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ .nil)))
       · intro s; exact sharedCoordinateProgram_slots w s

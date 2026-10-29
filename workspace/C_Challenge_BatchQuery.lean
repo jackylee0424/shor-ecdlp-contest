@@ -205,9 +205,7 @@ theorem batchOpCircuit_model (base : Wire) (source : Fin 4) (target : Fin 6)
     rw [h.2.2 w (fun i => by
       have hs' := batchScratch_above base w hw
       have ht' := batchWord_bound base target i
-      dsimp [batchFlag] at hs'
-      dsimp only [Wire] at *
-      omega)]
+      exact (Nat.ne_of_lt (ht'.trans hs')).symm)]
     exact hc w hw
 
 theorem batchRawMask_frame {n : Nat} (read : ConstantBit n → Bool) (row : Fin n)

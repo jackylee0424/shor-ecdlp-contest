@@ -1,3 +1,4 @@
+import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.WindowBody
 import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.StructuralSupport
 import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.BatchTemplate
 namespace ShorECDLP.Paper2607_13816.ChallengeMigration.Dirty
@@ -110,11 +111,24 @@ theorem batchOpCircuit_support (base : Wire) (source : Fin 4) (target : Fin 6) :
     circuitWires (batchOpCircuit base source target) ⊆ List.range' base 3079 := by
   unfold batchOpCircuit
   apply ShorECDLP.Compact.dirtyEndpointTransposition_support
-  all_goals simp only [List.mem_range'_1, batchWord, batchFlag]
-  all_goals intro i
-  all_goals have := i.isLt
-  all_goals dsimp only [Wire] at *
-  all_goals omega
+  · intro i
+    simp only [List.mem_range'_1, batchWord]
+    have := i.isLt
+    dsimp only [Wire] at *
+    omega
+  · intro i
+    simp only [List.mem_range'_1, batchWord]
+    have := i.isLt
+    dsimp only [Wire] at *
+    omega
+  · intro i
+    simp only [List.mem_range'_1, batchWord]
+    have := i.isLt
+    dsimp only [Wire] at *
+    omega
+  · simp only [List.mem_range'_1, batchFlag]
+    dsimp only [Wire]
+    omega
 
 theorem batchOps_support {n : Nat} (rows : Nat → Fin n) (base : Wire)
     (tree : UnaryActionTree) (control : Wire) (paths support : List Wire)
@@ -151,7 +165,7 @@ theorem batchedEndpointProgram_support {n : Nat} (rows : Nat → Fin n) (base : 
 
 /-- Component allocation before the data-bank permutation. -/
 def batchRawSupport : List Wire :=
-  836 :: pointLookupPath ++ pointLookupAddress ++ List.range' 1024 3590
+  836 :: pointLookupPath ++ pointLookupAddress ++ List.range' 1024 3079
 
 theorem batchWindow_support_raw (w : OddWindow) (start : Nat) :
     straightWires (batchedEndpointProgram (batchWindowRows w) 1024
@@ -180,9 +194,11 @@ theorem batchRawSupport_placed (z : Wire) (hz : z ∈ batchRawSupport) :
 attribute [local irreducible] batchedEndpointProgram
 
 theorem placedBatchProgram_support_static (w : OddWindow) (start : Nat) :
-    (straightWires (placedBatchProgram w start).2).map (windowAddressPerm 855 (by decide))
+    (straightWires (placedBatchStraight w start)).map (windowAddressPerm 855 (by decide))
       ⊆ batchedResetWires := by
-  simp only [placedBatchProgram,relabelCompiled_support,List.map_map]
+  unfold placedBatchStraight
+  rw [straightWires_castFinish]
+  simp only [placedBatchProgramRaw,relabelCompiled_support,List.map_map]
   intro z hz
   obtain ⟨v,hv,rfl⟩ := List.mem_map.mp hz
   exact batchRawSupport_placed v (batchWindow_support_raw w start hv)

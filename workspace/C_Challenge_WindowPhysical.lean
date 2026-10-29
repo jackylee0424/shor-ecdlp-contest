@@ -1,3 +1,4 @@
+import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.WindowBody
 import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.BatchTemplate
 import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.PreparedBatch
 namespace ShorECDLP.Paper2607_13816.ChallengeMigration.Dirty

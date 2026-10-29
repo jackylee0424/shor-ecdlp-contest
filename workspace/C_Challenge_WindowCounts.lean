@@ -70,9 +70,12 @@ theorem sharedYNegateProgram_count (w : OddWindow) (start : Nat) :
 
 theorem placedBatchProgram_tCount (w : OddWindow) (start : Nat) (Q : Point)
     (history : Fin start → Bool) :
-    compiledTCount (placedBatchProgram w start) (readConstant coefficientAt Q) history =
+    compiledTCount ⟨458738, placedBatchStraight w start⟩ (readConstant coefficientAt Q) history =
       (placedBatchSource Q w).tCount := by
-  simp only [placedBatchProgram,relabelCompiled,compiledTCount,relabelStraight_instantiate,
+  simp only [compiledTCount]
+  unfold placedBatchStraight
+  rw [castFinish_instantiate]
+  simp only [placedBatchProgramRaw,relabelCompiled,relabelStraight_instantiate,
     AdaptiveCircuit.relabel_tCount,batchedEndpointProgram,lookupProgram_tCount,batchOps_source,
     placedBatchSource]
 
@@ -132,7 +135,7 @@ theorem actualBatchedWindow_tCount (w : OddWindow) (start : Nat) (Q : Point) (hQ
 theorem batchedWindowCore_count (w : OddWindow) (start : Nat) :
     (batchedWindowCore w start).1 = 30733484 := by
   simp only [batchedWindowCore,batchedWindowSegments,sequenceProgram,appendCompiled,
-    sharedCoordinateProgram_count,sharedYNegateProgram_count,placedBatchProgram_count]
+    sharedCoordinateProgram_count,sharedYNegateProgram_count]
 
 theorem surroundCompiled_count {n start : Nat} (before after : Circuit)
     (p : (count : Nat) × Straight n start (start+count)) :
@@ -184,7 +187,7 @@ theorem standardOuterPlan_lists_stride {n : Nat} (left right : List (OuterWindow
       axisCount left + axisCount right + reset.length := by
   simp only [OuterPlan.stride,standardOuterPlan,Vector.toList,List.toList_toArray]
 
-theorem batchedOuterPlan_stride : batchedOuterPlan.stride = 860607482 := by
+theorem batchedOuterPlan_stride : batchedOuterPlan.stride = 860606971 := by
   have h := standardOuterPlan_lists_stride actualLeftWindows actualRightWindows
     actualLeftWindows_length actualRightWindows_length batchedResetWires
   apply h.trans
@@ -192,7 +195,7 @@ theorem batchedOuterPlan_stride : batchedOuterPlan.stride = 860607482 := by
 
 /-- Exact final record count includes the first lookup, all 28 addition windows,
 all Fourier measurements, and the full 3420-wire reset in each of 6 rounds. -/
-theorem batchedOuterPlan_finalCursor : streamingRounds * batchedOuterPlan.stride = 5163644892 := by
+theorem batchedOuterPlan_finalCursor : streamingRounds * batchedOuterPlan.stride = 5163641826 := by
   rw [batchedOuterPlan_stride]
   norm_num [streamingRounds]
 

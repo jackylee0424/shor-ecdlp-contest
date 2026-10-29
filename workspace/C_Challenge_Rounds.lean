@@ -19,7 +19,7 @@ def OuterPlan.positionsForStreaming {n : Nat} (p : OuterPlan n)
     by simp [axisPositions_length, legacyDecoderParams]⟩
 
 def OuterPlan.layoutForStreaming {n : Nat} (p : OuterPlan n) : DecodeLayout :=
-  ⟨.wrappedShift, legacyDecoderParams, List.ofFn p.positionsForStreaming,
+  ⟨.wrappedShift, legacyDecoderParams, List.ofFn (OuterPlan.positionsForStreaming p),
     by simp [streamingRounds]⟩
 
 end ShorECDLP.Paper2607_13816.ChallengeMigration.Dirty

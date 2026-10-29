@@ -19,7 +19,7 @@ theorem sharedYNegateProgram_run (w : OddWindow) (start : Nat) (read : ConstantB
 
 /-- Internal additions only; address preparation and Fourier are outside this list. -/
 def batchedWindowSegments (w : OddWindow) : List (FixedSegment 983040) :=
-  [sharedCoordinateProgram w, sharedYNegateProgram w, placedBatchProgram w, sharedYNegateProgram w]
+  [sharedCoordinateProgram w, sharedYNegateProgram w, (fun cursor => ⟨458738, placedBatchStraight w cursor⟩), sharedYNegateProgram w]
 
 noncomputable def batchedWindowSources (Q : Point) (w : OddWindow) : List AdaptiveCircuit :=
   [signedLookupCoordinateProgram (fun l => fieldValue (windowPoint Q w l) .x)
@@ -27,7 +27,13 @@ noncomputable def batchedWindowSources (Q : Point) (w : OddWindow) : List Adapti
 
 def batchedWindowCore (w : OddWindow) (start : Nat) :
     (count : Nat) × Straight 983040 start (start+count) :=
-  sequenceProgram 983040 (batchedWindowSegments w) start
+  sequenceProgram 983040 (sharedCoordinateProgram w :: sharedYNegateProgram w :: (fun cursor => ⟨458738, placedBatchStraight w cursor⟩) :: sharedYNegateProgram w :: List.nil) start
+
+theorem batchedWindowCore_eq :
+    batchedWindowCore = fun w start => sequenceProgram 983040
+      (sharedCoordinateProgram w :: sharedYNegateProgram w ::
+        (fun cursor => ⟨458738, placedBatchStraight w cursor⟩) ::
+        sharedYNegateProgram w :: List.nil) start := rfl
 
 theorem batchedWindowCore_run (w : OddWindow) (start : Nat) (Q : Point) (hQ : order • Q = 0)
     (history : Fin start → Bool) :
@@ -37,7 +43,7 @@ theorem batchedWindowCore_run (w : OddWindow) (start : Nat) (Q : Point) (hQ : or
   refine List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ (List.Forall₂.cons ?_ .nil)))
   · intro cursor h; exact sharedCoordinateProgram_run w cursor Q hQ h
   · intro cursor h; exact sharedYNegateProgram_run w cursor _ h
-  · intro cursor h; exact placedBatchProgram_run w cursor Q h
+  · intro cursor h; simpa only [compiledRun] using placedBatchStraight_run w cursor Q h
   · intro cursor h; exact sharedYNegateProgram_run w cursor _ h
 
 attribute [local irreducible] batchedWindowCore

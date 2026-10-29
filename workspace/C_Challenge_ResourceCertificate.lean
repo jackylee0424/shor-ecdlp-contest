@@ -62,7 +62,7 @@ theorem streamingEntry_instantiate (Q : Point) :
 attribute [local irreducible] streamingEntry fixedTableEntry
 
 /-- Upper bounds; the qubit bound is not an exact cardinality claim. -/
-def streamingBounds : Bounds := ⟨3421,86437092390,5163644892⟩
+def streamingBounds : Bounds := ⟨3421,86437092390,5163641826⟩
 
 theorem streamingEntry_qubitCount (Q : Point) :
     (streamingEntry.instantiate Q).qubitCount ≤ 3421 := by
@@ -76,7 +76,7 @@ theorem streamingEntry_tModel (Q : Point) :
   exact batchedOuterPlan_total_t_uniform Q
 
 theorem streamingEntry_measurements (Q : Point) :
-    (resources (streamingEntry.instantiate Q)).measurements = 5163644892 := by
+    (resources (streamingEntry.instantiate Q)).measurements = 5163641826 := by
   rw [streamingEntry,fixedTableEntry_measurements,Nat.zero_add]
   exact batchedOuterPlan_finalCursor
 
@@ -93,7 +93,7 @@ theorem streamingEntry_gateSlots : streamingEntry.program.gateSlots ≤ 50000000
 theorem streamingEntry_gateBudget : streamingEntry.program.gateSlots ≤ officialLimits.gateSlots :=
   streamingEntry_gateSlots.trans (by decide)
 
-theorem streamingEntry_finalCursor : streamingEntry.finalCursor = 5163644892 := by
+theorem streamingEntry_finalCursor : streamingEntry.finalCursor = 5163641826 := by
   unfold streamingEntry
   exact (fixedTableEntry_cursor coefficientAt (batchedOuterPlan.repeat streamingRounds 0)).trans
     ((Nat.zero_add _).trans batchedOuterPlan_finalCursor)
@@ -106,10 +106,10 @@ theorem streamingEntry_tableBudget : streamingEntry.coefficients.length ≤ offi
   exact Nat.le_refl _
 
 theorem streamingEntry_candidateBudget :
-    batchedOuterPlan.layoutForStreaming.trials.length *
-      decoderCandidateLimit batchedOuterPlan.layoutForStreaming.kind batchedOuterPlan.layoutForStreaming.params ≤
+    (OuterPlan.layoutForStreaming batchedOuterPlan).trials.length *
+      decoderCandidateLimit (OuterPlan.layoutForStreaming batchedOuterPlan).kind (OuterPlan.layoutForStreaming batchedOuterPlan).params ≤
       officialLimits.candidateChecks := by
-  exact streaming_candidate_budget batchedOuterPlan.layoutForStreaming rfl rfl
+  exact streaming_candidate_budget (OuterPlan.layoutForStreaming batchedOuterPlan) rfl rfl
 
 theorem streamingEntry_wellFormed : streamingEntry.program.WellFormed := by
   rw [streamingEntry]
@@ -121,9 +121,9 @@ theorem streamingEntry_certificate
     (success : ∀ (Q : Point) (d : Nat), Q ≠ 0 → Q = d • G →
       (99 : ℝ)/100 ≤ Instrument.bornMass
         ((streamingEntry.instantiate Q).run.filter
-          (fun b => (verifiedCandidate batchedOuterPlan.layoutForStreaming Q b.history).isSome))
+          (fun b => (verifiedCandidate (OuterPlan.layoutForStreaming batchedOuterPlan) Q b.history).isSome))
         (ket zeroBasisState)) :
-    Certificate officialLimits batchedOuterPlan.layoutForStreaming streamingEntry streamingBounds where
+    Certificate officialLimits (OuterPlan.layoutForStreaming batchedOuterPlan) streamingEntry streamingBounds where
   gateBudget := streamingEntry_gateBudget
   recordBudget := streamingEntry_recordBudget
   tableBudget := streamingEntry_tableBudget

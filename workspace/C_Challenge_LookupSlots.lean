@@ -175,8 +175,10 @@ theorem batchSlotBound_schedule (nodes : Nat) :
   omega
 
 theorem placedBatchProgram_slots (w : OddWindow) (start : Nat) :
-    (placedBatchProgram w start).2.gateSlots ≤ 1183793236 := by
-  simp only [placedBatchProgram,relabelCompiled,relabelStraight_slots,batchedEndpointProgram,
+    (placedBatchStraight w start).gateSlots ≤ 1183858580 := by
+  unfold placedBatchStraight
+  rw [castFinish_gateSlots]
+  simp only [placedBatchProgramRaw,relabelCompiled,relabelStraight_slots,batchedEndpointProgram,
     lookupProgram_slots]
   have h := batchOps_slots_le (batchWindowRows w) 1024 batchWindowTree 836 pointLookupPath batchSchedule
   rw [batchSlotBound_schedule] at h

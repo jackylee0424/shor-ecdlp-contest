@@ -119,7 +119,7 @@ theorem wrappedLayout_verified_any (params : DecoderParams) (Q : Point)
     List.append_nil,find_isSome_any] using hh
 
 theorem OuterPlan.verified_repeat_event {n : Nat} (p : OuterPlan n) (Q : Point) (history : List Bool) :
-    (verifiedCandidate p.layoutForStreaming Q history).isSome =
+    (verifiedCandidate (OuterPlan.layoutForStreaming p) Q history).isSome =
       planRepeatAccept p (wrappedPairAccept legacyDecoderParams Q) streamingRounds history := by
   rw [OuterPlan.layoutForStreaming,wrappedLayout_verified_any]
   apply Bool.eq_iff_iff.mpr
@@ -128,7 +128,7 @@ theorem OuterPlan.verified_repeat_event {n : Nat} (p : OuterPlan n) (Q : Point) 
   · rintro ⟨pos,⟨r,rfl⟩,hr⟩
     exact ⟨r.val,r.isLt,by simpa only [OuterPlan.positionsForStreaming,Vector.toList,List.toList_toArray,planRoundAccept] using hr⟩
   · rintro ⟨r,hr,haccept⟩
-    exact ⟨p.positionsForStreaming ⟨r,hr⟩,⟨⟨r,hr⟩,rfl⟩,by
+    exact ⟨(OuterPlan.positionsForStreaming p) ⟨r,hr⟩,⟨⟨r,hr⟩,rfl⟩,by
       simpa only [OuterPlan.positionsForStreaming,Vector.toList,List.toList_toArray,planRoundAccept] using haccept⟩
 
 private theorem roundAccept_zero {n : Nat} (p : OuterPlan n) (accept : Nat → Nat → Bool)
@@ -144,7 +144,7 @@ theorem actualRoundFixedAccept_eq (accept : Nat → Nat → Bool) (history : Lis
 theorem actualCompiledRepeat_verified_event (Q : Point) (hQ : order • Q=0)
     (b : InstrumentBranch)
     (hb : b ∈ ((batchedOuterPlan.repeat streamingRounds 0).instantiate (readConstant coefficientAt Q) Fin.elim0).run) :
-    (verifiedCandidate batchedOuterPlan.layoutForStreaming Q b.history).isSome =
+    (verifiedCandidate (OuterPlan.layoutForStreaming batchedOuterPlan) Q b.history).isSome =
       !repeatWindowFailed (actualRoundSource Q)
         (actualRoundFixedAccept (wrappedPairAccept legacyDecoderParams Q)) streamingRounds b.history := by
   rw [OuterPlan.verified_repeat_event]
@@ -161,7 +161,7 @@ theorem actualCompiledRepeat_verified_event (Q : Point) (hQ : order • Q=0)
 theorem actualCompiledRepeat_verified_mass (Q : Point) (hQ : order • Q=0) (hn : Q≠0) :
     Instrument.bornMass
       ((((batchedOuterPlan.repeat streamingRounds 0).instantiate (readConstant coefficientAt Q) Fin.elim0).run).filter
-        (fun b => (verifiedCandidate batchedOuterPlan.layoutForStreaming Q b.history).isSome)) (ket zeroBasisState) =
+        (fun b => (verifiedCandidate (OuterPlan.layoutForStreaming batchedOuterPlan) Q b.history).isSome)) (ket zeroBasisState) =
       independentRetrySuccessProbability
         (Instrument.bornMass ((actualRoundSource Q).run.filter
           (fun b => actualRoundFixedAccept (wrappedPairAccept legacyDecoderParams Q) b.history)) (ket zeroBasisState)) streamingRounds := by

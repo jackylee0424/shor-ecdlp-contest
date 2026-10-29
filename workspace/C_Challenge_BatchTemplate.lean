@@ -84,8 +84,10 @@ theorem relabelCompiled_wellFormed {n start : Nat} (e : Wire ≃ Wire)
 
 attribute [local irreducible] batchedEndpointProgram
 
-theorem placedBatchProgram_wellFormed (w : OddWindow) (start : Nat) :
-    (placedBatchProgram w start).2.WellFormed := by
+theorem placedBatchStraight_wellFormed (w : OddWindow) (start : Nat) :
+    (placedBatchStraight w start).WellFormed := by
+  simp only [placedBatchStraight, castFinish_wellFormed,
+    placedBatchProgramRaw]
   have hd : ∀ z ∈ 836::pointLookupPath, z < 1024 := by decide
   exact (relabelCompiled_wellFormed batchPlacement
     (batchedEndpointProgram (batchWindowRows w) 1024 batchWindowTree 836 pointLookupPath start)).mpr

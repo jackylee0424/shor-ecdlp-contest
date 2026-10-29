@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 08 accepted: uniform p≥0.546, six rounds; Briefs 06/07 complete)._
+_Last updated: 2026-10-29 by Codex (Brief 10 stopped at exact measured-comparator seam; rounds6 restored)._
 
 ## Current best
 
@@ -20,10 +20,19 @@ _Last updated: 2026-10-29 by Codex (Brief 08 accepted: uniform p≥0.546, six ro
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 10: flag-only endpoint correction, target 855 qubits | workspace flag-correction proofs; Entrant four-file package if accepted |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 
 ## Next up (unclaimed)
+
+- Brief 10 flag855 WIP is preserved in `workspace/flag855-wip/`; full findings are in
+  `work-notes/experiments/2026-10-29-flag855.md`. Endpoint logic, pure flag action, concrete
+  state refinement, all-valid-input `pointWrite`, window coherence and the prepared/actual
+  seam check. The exact blocker is the 1,276-CCX split zero test: generalize the private
+  `mcxVChainTailAdaptive_coherent` with a deepest-node dirty-MCX continuation, then unwind
+  256 conjunctions with measured erasure. Also fuse adjacent endpoint columns into one
+  Clifford leaf to reduce 24 traversals to 13. Do not integrate the checked conservative
+  fallback (2,042 CCX/test); it projects 86,668,498,614 T and misses the brief. Bench is the
+  byte-identical accepted rounds6 snapshot; no new score or SCOREBOARD row.
 
 - Brief 07 complete: `docs/ECDLP-AI-GOLD.md` inventories Gold/ecdlp routes, source→Straight design and conditional architecture/error budgets; calculators/index in `workspace/gold_{costs,route_inventory}.py` and `gold_artifacts.json`. **Exact** 2841/2820 line exists (sealed2820), but no inspected full channel/total-point theorem. Small routes remain approximate with unproved uniform failure bounds; 1401/1402 resource lemmas use forbidden native axioms. Start with one exact source-bound Gold AND/carry cell → Straight + kernel coherent run/count/support/record theorem, then parametric adder and replay scaling. No bench/donor edits or builds; no new entrant/score.
 

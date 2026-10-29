@@ -171,10 +171,10 @@ theorem OuterPlan.repeat_actualWords {n : Nat} (p : OuterPlan n) (count start : 
 
 theorem OuterPlan.entry_actualWords (coefficients : List PointCoeff)
     (p : OuterPlan coefficients.length) (Q : Secp256k1.Point)
-    (b : InstrumentBranch) (hb : b ∈ ((p.entryForStreaming coefficients).instantiate Q).run) (r : Fin streamingRounds) :
+    (b : InstrumentBranch) (hb : b ∈ ((OuterPlan.entryForStreaming coefficients p).instantiate Q).run) (r : Fin streamingRounds) :
     ∃ left right : List Bool, left.length = 256 ∧ right.length = 208 ∧
-      readWord b.history (p.positionsForStreaming r).left.toList = some (fourierWordLSB left) ∧
-      readWord b.history (p.positionsForStreaming r).right.toList = some (fourierWordLSB right) := by
+      readWord b.history ((OuterPlan.positionsForStreaming p) r).left.toList = some (fourierWordLSB left) ∧
+      readWord b.history ((OuterPlan.positionsForStreaming p) r).right.toList = some (fourierWordLSB right) := by
   simp only [OuterPlan.entryForStreaming,StraightEntry.instantiate,castFinish_instantiate] at hb
   have h := p.repeat_actualWords streamingRounds 0 (readConstant coefficients.get Q) Fin.elim0 b hb r.val r.isLt List.nil
   simpa only [OuterPlan.positionsForStreaming,Vector.toList,List.toList_toArray,List.ofFn_zero,

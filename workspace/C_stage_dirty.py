@@ -169,19 +169,74 @@ theorem batchOpCircuit_model (base : Wire) (source : Fin 4) (target : Fin 6)
     rw [h.2.2 w (fun i => by
       have hs' := batchScratch_above base w hw
       have ht' := batchWord_bound base target i
-      dsimp [batchFlag] at hs'
-      dsimp only [Wire] at *
-      omega)]
+      exact (Nat.ne_of_lt (ht'.trans hs')).symm)]
     exact hc w hw
 
 '''
     text = text[:start] + model + text[finish:]
     write_pair(bench_root, "Challenge/BatchQuery.lean", text)
 
-    for name in ("BatchExecution", "BatchFrame", "BatchPlacement", "PlacedBatch"):
+    for name in ("BatchExecution", "BatchFrame", "PlacedBatch"):
         text = dirty_namespace((source_dir / f"{name}.lean").read_text())
         text = map_imports(text, names)
         write_pair(bench_root, f"Challenge/{name}.lean", text)
+
+    # Normalize the dependent pair's count to a numeral.  This keeps downstream
+    # Straight composition from unfolding the entire lookup program merely to
+    # compare finish indices.
+    text = dirty_namespace((source_dir / "BatchPlacement.lean").read_text())
+    text = map_imports(text, names)
+    begin = text.index("def placedBatchProgram")
+    end = text.index("noncomputable def placedBatchSource", begin)
+    replacement = '''def placedBatchProgramRaw (w : OddWindow) (start : Nat) :
+    (count : Nat) × Straight 983040 start (start+count) :=
+  relabelCompiled batchPlacement
+    (batchedEndpointProgram (batchWindowRows w) 1024 batchWindowTree 836 pointLookupPath start)
+
+theorem placedBatchProgramRaw_count (w : OddWindow) (start : Nat) :
+    (placedBatchProgramRaw w start).1 = 458738 := by
+  simp only [placedBatchProgramRaw, relabelCompiled]
+  rw [batchedEndpointProgram_count _ _ _ _ _ _ batchWindowTree_layout]
+  have h := tableAddressTree_nodes pointLookupAddress 0 1
+  change batchWindowTree.internalNodes + 1 = 32768 at h
+  omega
+
+def placedBatchStraight (w : OddWindow) (start : Nat) :
+    Straight 983040 start (start + 458738) :=
+  let p := placedBatchProgramRaw w start
+  castFinish (congrArg (fun count => start + count)
+    (placedBatchProgramRaw_count w start)) p.2
+
+def placedBatchProgram (w : OddWindow) (start : Nat) :
+    (count : Nat) × Straight 983040 start (start+count) :=
+  ⟨458738, placedBatchStraight w start⟩
+
+'''
+    text = text[:begin] + replacement + text[end:]
+    old_run = '''  exact relabelCompiled_run _ _ _ _ _
+    (batchedEndpointProgram_run _ (batchWindowRows w) 1024
+      batchWindowTree 836 pointLookupPath start history)
+'''
+    new_run = '''  simp only [placedBatchStraight, castFinish_instantiate]
+  simp only [placedBatchProgramRaw, placedBatchSource, relabelCompiled,
+    relabelStraight_instantiate, AdaptiveCircuit.run_relabel,
+    batchedEndpointProgram, lookupProgram_run, batchOps_source]
+'''
+    text = replace_once(text, old_run, new_run, "BatchPlacement run")
+    text = text.replace("theorem placedBatchProgram_run", "theorem placedBatchStraight_run", 1)
+    text = text.replace(
+        '''    compiledRun (placedBatchProgram w start) (readConstant coefficientAt Q) history =
+      (placedBatchSource Q w).run := by''',
+        '''    ((placedBatchStraight w start).instantiate (readConstant coefficientAt Q) history).run =
+      (placedBatchSource Q w).run := by''',
+        1,
+    )
+    count_begin = text.index("theorem placedBatchProgram_count")
+    count_end = text.index("\n\nend ", count_begin)
+    count_replacement = '''theorem placedBatchProgram_count (w : OddWindow) (start : Nat) :
+    (placedBatchProgram w start).1 = 458738 := rfl'''
+    text = text[:count_begin] + count_replacement + text[count_end:]
+    write_pair(bench_root, "Challenge/BatchPlacement.lean", text)
 
     text = dirty_namespace((source_dir / "BatchCoherent.lean").read_text())
     text = map_imports(text, names)
@@ -218,6 +273,18 @@ theorem batchOpCircuit_model (base : Wire) (source : Fin 4) (target : Fin 6)
         (batchSwap_geometry base source target hop.1 hop.2)
 '''
         text = replace_once(text, old, new, f"{name} wellFormed")
+        if name == "BatchTemplate":
+            text = text.replace(
+                '''theorem placedBatchProgram_wellFormed (w : OddWindow) (start : Nat) :
+    (placedBatchProgram w start).2.WellFormed := by
+  have hd''',
+                '''theorem placedBatchStraight_wellFormed (w : OddWindow) (start : Nat) :
+    (placedBatchStraight w start).WellFormed := by
+  simp only [placedBatchStraight, castFinish_wellFormed,
+    placedBatchProgramRaw]
+  have hd''',
+                1,
+            )
         write_pair(bench_root, f"Challenge/{name}.lean", text)
 
     text = dirty_namespace((source_dir / "BatchCost.lean").read_text())
@@ -238,6 +305,32 @@ theorem batchOpCircuit_model (base : Wire) (source : Fin 4) (target : Fin 6)
 
     text = dirty_namespace((source_dir / "WindowBody.lean").read_text())
     text = map_imports(text, names)
+    text = text.replace(
+        "[sharedCoordinateProgram w, sharedYNegateProgram w, placedBatchProgram w, sharedYNegateProgram w]",
+        "[sharedCoordinateProgram w, sharedYNegateProgram w, "
+        "(fun cursor => ⟨458738, placedBatchStraight w cursor⟩), sharedYNegateProgram w]",
+    )
+    text = text.replace(
+        "sequenceProgram 983040 (batchedWindowSegments w) start",
+        "sequenceProgram 983040 (sharedCoordinateProgram w :: sharedYNegateProgram w :: "
+        "(fun cursor => ⟨458738, placedBatchStraight w cursor⟩) :: "
+        "sharedYNegateProgram w :: List.nil) start",
+    )
+    marker = "theorem batchedWindowCore_run"
+    pos = text.index(marker)
+    core_eq = '''theorem batchedWindowCore_eq :
+    batchedWindowCore = fun w start => sequenceProgram 983040
+      (sharedCoordinateProgram w :: sharedYNegateProgram w ::
+        (fun cursor => ⟨458738, placedBatchStraight w cursor⟩) ::
+        sharedYNegateProgram w :: List.nil) start := rfl
+
+'''
+    text = text[:pos] + core_eq + text[pos:]
+    text = text.replace("placedBatchProgram_run", "placedBatchStraight_run")
+    text = text.replace(
+        "intro cursor h; exact placedBatchStraight_run w cursor Q h",
+        "intro cursor h; simpa only [compiledRun] using placedBatchStraight_run w cursor Q h",
+    )
     text = text.replace("List.range' 4102 512", "List.range' 4102 1")
     text = text.replace("batchedResetWires.length = 3931", "batchedResetWires.length = 3420")
     write_pair(bench_root, "Challenge/WindowBody.lean", text)
@@ -256,6 +349,8 @@ def ported_modules(bench_root: Path) -> None:
         "14393320473": "14406127897",
         "14393374641": "14406182065",
         "86360247846": "86437092390",
+        "860607482": "860606971",
+        "5163644892": "5163641826",
         "3932": "3421",
         "3931": "3420",
     }
@@ -266,28 +361,60 @@ def ported_modules(bench_root: Path) -> None:
         text = path.read_text()
         text = dirty_namespace(text)
         text = map_imports(text, protected_names)
+        text = text.replace("p.entryForStreaming coefficients", "OuterPlan.entryForStreaming coefficients p")
+        text = text.replace("p.positionsForStreaming", "(OuterPlan.positionsForStreaming p)")
+        text = text.replace("p.layoutForStreaming", "(OuterPlan.layoutForStreaming p)")
+        text = text.replace("batchedOuterPlan.layoutForStreaming",
+                            "(OuterPlan.layoutForStreaming batchedOuterPlan)")
         for old, new in replacements.items():
             text = text.replace(old, new)
+        if rel == "Challenge/WindowPhysical.lean":
+            text = f"import {DIRTY_STREAM}.Challenge.WindowBody\n" + text
         write_pair(bench_root, rel, text)
 
     # Support uses only the five words and flag; no clean-chain labels survive.
     path = bench_root / "ShorECDLP/Submission/Entrant/Streaming/Dirty/Challenge/BatchSupport.lean"
     text = path.read_text()
+    text = f"import {DIRTY_STREAM}.Challenge.WindowBody\n" + text
     begin = text.index("theorem batchOpCircuit_support")
     end = text.index("theorem batchOps_support", begin)
     replacement = r'''theorem batchOpCircuit_support (base : Wire) (source : Fin 4) (target : Fin 6) :
     circuitWires (batchOpCircuit base source target) ⊆ List.range' base 3079 := by
   unfold batchOpCircuit
   apply ShorECDLP.Compact.dirtyEndpointTransposition_support
-  all_goals simp only [List.mem_range'_1, batchWord, batchFlag]
-  all_goals intro i
-  all_goals have := i.isLt
-  all_goals dsimp only [Wire] at *
-  all_goals omega
+  · intro i
+    simp only [List.mem_range'_1, batchWord]
+    have := i.isLt
+    dsimp only [Wire] at *
+    omega
+  · intro i
+    simp only [List.mem_range'_1, batchWord]
+    have := i.isLt
+    dsimp only [Wire] at *
+    omega
+  · intro i
+    simp only [List.mem_range'_1, batchWord]
+    have := i.isLt
+    dsimp only [Wire] at *
+    omega
+  · simp only [List.mem_range'_1, batchFlag]
+    dsimp only [Wire]
+    omega
 
 '''
     text = text[:begin] + replacement + text[end:]
-    text = text.replace("List.range' base 3590", "List.range' base 3079")
+    text = text.replace("3590", "3079")
+    text = text.replace("(placedBatchProgram w start).2", "(placedBatchStraight w start)")
+    text = text.replace(
+        "placedBatchProgram,relabelCompiled_support",
+        "placedBatchStraight,placedBatchProgramRaw,straightWires_castFinish,relabelCompiled_support",
+    )
+    text = text.replace(
+        '''  simp only [placedBatchStraight,placedBatchProgramRaw,straightWires_castFinish,relabelCompiled_support,List.map_map]''',
+        '''  unfold placedBatchStraight
+  rw [straightWires_castFinish]
+  simp only [placedBatchProgramRaw,relabelCompiled_support,List.map_map]''',
+    )
     path.write_text(text)
     (LAB / "workspace/C_Challenge_BatchSupport.lean").write_text(text)
 
@@ -304,8 +431,98 @@ def ported_modules(bench_root: Path) -> None:
 '''
     text = text[:begin] + replacement + text[end:]
     text = text.replace("13326", "17410")
+    text = text.replace("≤ 1183793236", "≤ 1183858580")
+    text = text.replace("(placedBatchProgram w start).2.gateSlots", "(placedBatchStraight w start).gateSlots")
+    text = text.replace(
+        "placedBatchProgram,relabelCompiled,relabelStraight_slots",
+        "placedBatchStraight,placedBatchProgramRaw,castFinish_gateSlots,relabelCompiled,relabelStraight_slots",
+    )
+    text = text.replace(
+        '''  simp only [placedBatchStraight,placedBatchProgramRaw,castFinish_gateSlots,relabelCompiled,relabelStraight_slots,batchedEndpointProgram,
+    lookupProgram_slots]''',
+        '''  unfold placedBatchStraight
+  rw [castFinish_gateSlots]
+  simp only [placedBatchProgramRaw,relabelCompiled,relabelStraight_slots,batchedEndpointProgram,
+    lookupProgram_slots]''',
+    )
     path.write_text(text)
     (LAB / "workspace/C_Challenge_LookupSlots.lean").write_text(text)
+
+    path = bench_root / "ShorECDLP/Submission/Entrant/Streaming/Dirty/Challenge/WindowSlots.lean"
+    text = path.read_text()
+    text = text.replace("1183793236", "1183858580")
+    text = text.replace("2683845980", "2683911324")
+    path.write_text(text)
+    (LAB / "workspace/C_Challenge_WindowSlots.lean").write_text(text)
+
+    # The larger reversible comparator proof needs more elaboration fuel only here.
+    path = bench_root / "ShorECDLP/Submission/Entrant/Streaming/Dirty/Challenge/ActualPhysical.lean"
+    text = path.read_text()
+    text = f"import {DIRTY_STREAM}.Challenge.WindowBody\n" + text
+    text = text.replace(
+        "attribute [local irreducible] sharedCoordinateProgram sharedYNegateProgram placedBatchProgram",
+        "attribute [local irreducible] sharedCoordinateProgram sharedYNegateProgram",
+        1,
+    )
+    begin = text.index("theorem batchedWindowCore_wellFormed")
+    end = text.index("attribute [local irreducible] batchedWindowCore", begin)
+    replacement = '''private theorem sequenceFour_wellFormed {n : Nat}
+    (a b d : FixedSegment n)
+    (c : (start : Nat) → Straight n start (start + 458738))
+    (ha : ∀ start, (a start).2.WellFormed)
+    (hb : ∀ start, (b start).2.WellFormed)
+    (hc : ∀ start, (c start).WellFormed)
+    (hd : ∀ start, (d start).2.WellFormed) (start : Nat) :
+    (sequenceProgram n
+      (a :: b :: (fun cursor => ⟨458738, c cursor⟩) :: d :: List.nil) start).2.WellFormed := by
+  apply sequenceProgram_wellFormed
+  intro p hp cursor
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl | rfl
+  · exact ha cursor
+  · exact hb cursor
+  · simpa only using hc cursor
+  · exact hd cursor
+
+set_option maxRecDepth 10000 in
+theorem batchedWindowCore_wellFormed (w : OddWindow) (start : Nat) :
+    (batchedWindowCore w start).2.WellFormed := by
+  rw [batchedWindowCore_eq]
+  exact sequenceFour_wellFormed (a := sharedCoordinateProgram w)
+    (b := sharedYNegateProgram w) (c := placedBatchStraight w)
+    (d := sharedYNegateProgram w) (sharedCoordinateProgram_wellFormed w)
+    (sharedYNegateProgram_wellFormed w) (placedBatchStraight_wellFormed w)
+    (sharedYNegateProgram_wellFormed w) start
+
+'''
+    text = text[:begin] + replacement + text[end:]
+    path.write_text(text)
+    (LAB / "workspace/C_Challenge_ActualPhysical.lean").write_text(text)
+
+    path = bench_root / "ShorECDLP/Submission/Entrant/Streaming/Dirty/Challenge/WindowCounts.lean"
+    text = path.read_text()
+    text = text.replace(
+        "compiledTCount (placedBatchProgram w start)",
+        "compiledTCount ⟨458738, placedBatchStraight w start⟩",
+    )
+    text = text.replace(
+        "placedBatchProgram,relabelCompiled,compiledTCount",
+        "placedBatchStraight,placedBatchProgramRaw,relabelCompiled,compiledTCount,castFinish_instantiate",
+    )
+    text = text.replace(",placedBatchProgram_count]", "]")
+    text = text.replace(
+        '''  simp only [placedBatchStraight,placedBatchProgramRaw,relabelCompiled,compiledTCount,castFinish_instantiate,relabelStraight_instantiate,
+    AdaptiveCircuit.relabel_tCount,batchedEndpointProgram,lookupProgram_tCount,batchOps_source,
+    placedBatchSource]''',
+        '''  simp only [compiledTCount]
+  unfold placedBatchStraight
+  rw [castFinish_instantiate]
+  simp only [placedBatchProgramRaw,relabelCompiled,relabelStraight_instantiate,
+    AdaptiveCircuit.relabel_tCount,batchedEndpointProgram,lookupProgram_tCount,batchOps_source,
+    placedBatchSource]''',
+    )
+    path.write_text(text)
+    (LAB / "workspace/C_Challenge_WindowCounts.lean").write_text(text)
 
 
 def main() -> None:

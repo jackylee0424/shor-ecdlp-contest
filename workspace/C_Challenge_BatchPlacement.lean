@@ -51,29 +51,43 @@ def batchWindowTree : UnaryActionTree := tableAddressTree pointLookupAddress 0 1
 theorem batchWindowTree_layout : batchWindowTree.Layout 836 pointLookupPath :=
   tableAddressTree_layout _ _ _ _ _ (by decide) (by decide)
 
-def placedBatchProgram (w : OddWindow) (start : Nat) :
+def placedBatchProgramRaw (w : OddWindow) (start : Nat) :
     (count : Nat) × Straight 983040 start (start+count) :=
   relabelCompiled batchPlacement
     (batchedEndpointProgram (batchWindowRows w) 1024 batchWindowTree 836 pointLookupPath start)
+
+theorem placedBatchProgramRaw_count (w : OddWindow) (start : Nat) :
+    (placedBatchProgramRaw w start).1 = 458738 := by
+  simp only [placedBatchProgramRaw, relabelCompiled]
+  rw [batchedEndpointProgram_count _ _ _ _ _ _ batchWindowTree_layout]
+  have h := tableAddressTree_nodes pointLookupAddress 0 1
+  change batchWindowTree.internalNodes + 1 = 32768 at h
+  omega
+
+def placedBatchStraight (w : OddWindow) (start : Nat) :
+    Straight 983040 start (start + 458738) :=
+  let p := placedBatchProgramRaw w start
+  castFinish (congrArg (fun count => start + count)
+    (placedBatchProgramRaw_count w start)) p.2
+
+def placedBatchProgram (w : OddWindow) (start : Nat) :
+    (count : Nat) × Straight 983040 start (start+count) :=
+  ⟨458738, placedBatchStraight w start⟩
 
 noncomputable def placedBatchSource (Q : Point) (w : OddWindow) : AdaptiveCircuit :=
   (batchSource (readConstant coefficientAt Q) (batchWindowRows w) 1024
     batchWindowTree 836 pointLookupPath batchSchedule).relabel batchPlacement
 
-theorem placedBatchProgram_run (w : OddWindow) (start : Nat) (Q : Point)
+theorem placedBatchStraight_run (w : OddWindow) (start : Nat) (Q : Point)
     (history : Fin start → Bool) :
-    compiledRun (placedBatchProgram w start) (readConstant coefficientAt Q) history =
+    ((placedBatchStraight w start).instantiate (readConstant coefficientAt Q) history).run =
       (placedBatchSource Q w).run := by
-  exact relabelCompiled_run _ _ _ _ _
-    (batchedEndpointProgram_run _ (batchWindowRows w) 1024
-      batchWindowTree 836 pointLookupPath start history)
+  simp only [placedBatchStraight, castFinish_instantiate]
+  simp only [placedBatchProgramRaw, placedBatchSource, relabelCompiled,
+    relabelStraight_instantiate, AdaptiveCircuit.run_relabel,
+    batchedEndpointProgram, lookupProgram_run, batchOps_source]
 
 theorem placedBatchProgram_count (w : OddWindow) (start : Nat) :
-    (placedBatchProgram w start).1 = 458738 := by
-  simp only [placedBatchProgram,relabelCompiled]
-  rw [batchedEndpointProgram_count _ _ _ _ _ _ batchWindowTree_layout]
-  have h := tableAddressTree_nodes pointLookupAddress 0 1
-  change batchWindowTree.internalNodes + 1 = 32768 at h
-  omega
+    (placedBatchProgram w start).1 = 458738 := rfl
 
 end ShorECDLP.Paper2607_13816.ChallengeMigration.Dirty

@@ -1,3 +1,4 @@
+import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.WindowBody
 import ShorECDLP.Submission.Entrant.Streaming.Dirty.Challenge.CoordinatePhysical
 
 /-! Physical validity of the actual first and signed windows and their outer composition. -/
@@ -9,18 +10,35 @@ theorem sharedCoordinateProgram_wellFormed (w : OddWindow) (start : Nat) :
     (sharedCoordinateProgram w start).2.WellFormed :=
   (reindexCompiled_wellFormed _ _).mpr (coordinateProgram_wellFormed start)
 
-attribute [local irreducible] sharedCoordinateProgram sharedYNegateProgram placedBatchProgram
+attribute [local irreducible] sharedCoordinateProgram sharedYNegateProgram
 
-theorem batchedWindowCore_wellFormed (w : OddWindow) (start : Nat) :
-    (batchedWindowCore w start).2.WellFormed := by
+private theorem sequenceFour_wellFormed {n : Nat}
+    (a b d : FixedSegment n)
+    (c : (start : Nat) → Straight n start (start + 458738))
+    (ha : ∀ start, (a start).2.WellFormed)
+    (hb : ∀ start, (b start).2.WellFormed)
+    (hc : ∀ start, (c start).WellFormed)
+    (hd : ∀ start, (d start).2.WellFormed) (start : Nat) :
+    (sequenceProgram n
+      (a :: b :: (fun cursor => ⟨458738, c cursor⟩) :: d :: List.nil) start).2.WellFormed := by
   apply sequenceProgram_wellFormed
   intro p hp cursor
-  simp only [batchedWindowSegments,List.mem_cons,List.not_mem_nil,or_false] at hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
   rcases hp with rfl | rfl | rfl | rfl
-  · exact sharedCoordinateProgram_wellFormed _ _
-  · exact sharedYNegateProgram_wellFormed _ _
-  · exact placedBatchProgram_wellFormed _ _
-  · exact sharedYNegateProgram_wellFormed _ _
+  · exact ha cursor
+  · exact hb cursor
+  · simpa only using hc cursor
+  · exact hd cursor
+
+set_option maxRecDepth 10000 in
+theorem batchedWindowCore_wellFormed (w : OddWindow) (start : Nat) :
+    (batchedWindowCore w start).2.WellFormed := by
+  rw [batchedWindowCore_eq]
+  exact sequenceFour_wellFormed (a := sharedCoordinateProgram w)
+    (b := sharedYNegateProgram w) (c := placedBatchStraight w)
+    (d := sharedYNegateProgram w) (sharedCoordinateProgram_wellFormed w)
+    (sharedYNegateProgram_wellFormed w) (placedBatchStraight_wellFormed w)
+    (sharedYNegateProgram_wellFormed w) start
 
 attribute [local irreducible] batchedWindowCore
 
