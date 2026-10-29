@@ -1,0 +1,4 @@
+name: streaming26
+date: 2026-10-29T11:49:05-07:00
+bench_commit: 535a493f520dd7efe8c1cfc0b8b5a2741d5b35c1
+note: accepted local official benchmark; QxT=1471463476298712 (3932 x 374227740666), measurements=22375794532, 26 rounds, packed into four tracked Entrant files

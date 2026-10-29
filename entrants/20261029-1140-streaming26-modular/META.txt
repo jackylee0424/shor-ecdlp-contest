@@ -1,0 +1,4 @@
+name: streaming26-modular
+date: 2026-10-29T11:40:49-07:00
+bench_commit: 535a493f520dd7efe8c1cfc0b8b5a2741d5b35c1
+note: 26-round certificate compiles and has allowed axioms; official source gate requires packaging in the four tracked Entrant files
