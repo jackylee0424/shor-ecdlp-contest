@@ -9,8 +9,12 @@ source "$(dirname "$0")/env.sh"
 brief="$1"
 log="${2:-$LOGS/codex-$(basename "$brief" .md)-$(date +%Y%m%d-%H%M%S).log}"
 export CODEX_HOME="${CODEX_HOME:-$HOME/.codex-wsl}"
-echo "codex agent: brief=$brief log=$log"
-codex exec --skip-git-repo-check \
+# CODEX_CYBER=daybreak_blue requests the account's Daybreak cyber access program (secp256k1/ECDSA
+# research otherwise trips the cyber classifier). Default: server default.
+cyber=()
+[[ -n "${CODEX_CYBER:-}" ]] && cyber=(--cyber-access-program "$CODEX_CYBER")
+echo "codex agent: brief=$brief log=$log cyber=${CODEX_CYBER:-default}"
+codex exec --skip-git-repo-check "${cyber[@]}" \
   -m "${CODEX_MODEL:-gpt-6.1-sol}" \
   -C "$LAB" --add-dir "$BENCH" \
   - < "$brief" > "$log" 2>&1

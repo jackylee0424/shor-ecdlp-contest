@@ -1,6 +1,6 @@
 # Brief 09 — compact the correction component: dirty comparator + 310 wire loans (3,932 → ~3,111 qubits)
 
-**Start only after Brief 08 has landed** (both edit the same packaged Entrant files). Read `AGENTS.md`, `work-notes/HANDOFF.md`,
+Brief 08 has landed: start from `entrants/20261029-1215-rounds6` (6 rounds, 3,932 × 86,360,247,846 = 339,568,494,530,472), which is live in the bench. Target ≈ 3,111 × ~86.44e9 ≈ 2.7e14. Read `AGENTS.md`, `work-notes/HANDOFF.md`,
 `docs/CONTRIBUTIONS-PLAN.md` §1 (310-label correction-only relabel, 3,622 Q) and `docs/ECDSAFAIL-TRICKS.md` "Top three" §1
 (dirty-borrowed MCX comparator, 3,421 Q; combined 3,111 Q). Calculators: `workspace/streaming_t_breakdown.py`, `workspace/ecdsafail_tricks_costs.py`.
 
@@ -27,3 +27,10 @@ Develop modularly (see `entrants/*-modular` and `workspace/port_upstream.py`), t
 Ship step 1 as soon as it is accepted (`build.sh`, `axioms.sh`, `boundary.sh`, `score.sh`, `snapshot.sh compact-dirty`), then step 2.
 For each: an experiment note, a SCOREBOARD row, LOG and HANDOFF. Keep the attribution header in `Main.lean` and add a line naming this contribution
 (the dirty-comparator technique comes from our ecdsa.fail low-qubit work). Do not submit.
+
+## Resume note (2026-10-29)
+
+A first attempt (Codex gpt-6.1-sol) was stopped by the provider's cyber classifier after drafting `workspace/DirtyMCX.lean`
+(dirty sweep definitions and early lemmas, unverified). Continue from that draft: check it with `formal-tools/check.sh workspace/DirtyMCX.lean`
+first. The bench Entrant was left untouched and still equals `entrants/20261029-1215-rounds6`.
+A concurrent read-only analysis may write `docs/SPOOKY-ON-09.md` and `workspace/spooky_endpoint.py`; do not edit those.

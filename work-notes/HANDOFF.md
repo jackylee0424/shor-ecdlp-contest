@@ -20,6 +20,7 @@ _Last updated: 2026-10-29 by Codex (Brief 08 accepted: uniform p≥0.546, six ro
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 09: dirty comparator, then 310 correction loans | workspace/DirtyMCX.lean; compact correction modules |
 
 ## Next up (unclaimed)
 

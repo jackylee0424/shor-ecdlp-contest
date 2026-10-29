@@ -33,6 +33,9 @@ enabled by default. `formal-tools/score.sh` runs `./benchmark.sh` directly, with
 - `CODEX_HOME=~/.codex-wsl`: `config.toml` (model `gpt-6.1-sol`, `sandbox_mode = workspace-write`,
   `approval_policy = never`, network on) and `auth.json`, which is a symlink to the Windows `~/.codex/auth.json`.
 - Launch with `formal-tools/codex-agent.sh briefs/<brief>.md`. Writable roots are the lab plus the bench.
+- **Cyber classifier:** `gpt-6.1-sol` can be stopped mid-task with "flagged for possible cybersecurity risk" (secp256k1/ECDSA context).
+  Daybreak is not available for Sol (403). Use the account's Daybreak program with its model instead:
+  `CODEX_CYBER=daybreak_blue CODEX_MODEL=gpt-daybreak-blue-latest formal-tools/codex-agent.sh briefs/<brief>.md` (verified 2026-10-29).
 - Windows-side Codex cannot be used here: its Windows sandbox fails to spawn processes
   ("setup refresh had errors"), and unsandboxed mode is not permitted.
 
