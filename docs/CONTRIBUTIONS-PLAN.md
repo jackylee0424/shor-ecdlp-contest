@@ -1,5 +1,7 @@
 # Contributions on top of the upstream streaming certificate
 
+> **Brief 08 update (2026-10-29): rank 1 is implemented and officially accepted.** Our theorem proves uniform p≥0.546, and the live six-round entrant scores **339,568,494,530,472** (3,932 × 86,360,247,846), with 5,163,644,892 measurements. Full kernel replay passes. See `work-notes/experiments/2026-10-29-uniform-acceptance.md` and `entrants/20261029-1215-rounds6`. The original Brief 05 analysis below is historical; its unimplemented-status statements about acceptance are superseded. Width borrowing remains pending.
+
 2026-10-29, Brief 05. **First prove an average-peak acceptance bound; next borrow arithmetic scratch during correction.** The former has a concrete mathematical route to six rounds; the latter has an explicit 3,622-label allocation. Together their conditional score is **312,796,817,698,212**, 4.70× better than Brief 04's accepted 26-round score. Neither improvement has been implemented or checked in Lean here.
 
 This was source analysis and Python only. No bench edits, builds, `lake`, score, or submission were run by Brief 05. Baseline for comparisons: **3,932 Q × 374,227,740,666 T = 1,471,463,476,298,712**, 26 rounds, 256/208 Fourier bits, wrapped-shift decoder. Brief 04 recorded official acceptance during this analysis (`entrants/20261029-1149-streaming26`); that receipt, rather than an independent replay here, establishes the baseline.
@@ -147,7 +149,7 @@ a\ge0.773140157140\ldots,\qquad
 2a-1-1/r\ge0.546280314281\ldots>\frac{546}{1000}.
 \]
 
-Thus **p≥0.546 is a concrete proposed theorem**, not a Lean result. It would give `1−(454/1000)^6 = 0.991243407954631…`; five rounds would only give 0.980712… at this bound. Required work is M/L: a new analytic bound and finite sums, not a new quantum circuit. A weaker polynomial minorant is a useful intermediate 7–8-round milestone if the degree-eight cosine proof is awkward.
+Brief 08 has now proved **p≥0.546 in Lean** and obtained official six-round acceptance. It would give `1−(454/1000)^6 = 0.991243407954631…`; five rounds would only give 0.980712… at this bound. The completed proof uses a direct finite double-cosine expansion and symbolic moments; it changes the acceptance argument and repetition count. A weaker polynomial minorant is a useful intermediate 7–8-round milestone if the degree-eight cosine proof is awkward.
 
 | Per-round lower bound p | Required rounds | T bound | Status |
 |---:|---:|---:|---|
@@ -158,7 +160,7 @@ Thus **p≥0.546 is a concrete proposed theorem**, not a Lean result. It would g
 | 0.30 | 13 | 187,113,870,333 | Same |
 | 0.40 | 10 | 143,933,746,410 | Same |
 | 0.50 | 7 | 100,753,622,487 | Same |
-| **0.546** | **6** | **86,360,247,846** | Proposed uniform polynomial proof |
+| **0.546** | **6** | **86,360,247,846** | **Accepted, Brief 08** |
 | 0.60 | 6 | 86,360,247,846 | Optimistic research target, no uniform proof |
 | 0.70 | 4 | 57,573,498,564 | Speculative; no support from this analysis |
 

@@ -1,0 +1,4 @@
+name: rounds6
+date: 2026-10-29T12:15:23-07:00
+bench_commit: 535a493f520dd7efe8c1cfc0b8b5a2741d5b35c1
+note: 3932 × 86360247846 = 339568494530472; our uniform p≥0.546; official benchmark accepted
