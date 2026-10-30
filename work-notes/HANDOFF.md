@@ -1,12 +1,13 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 27 proved fixed modular cofactors and tagged replay, refuted local tag-free replay, and stopped after an unfavorable exact-model screen)._
+_Last updated: 2026-10-30 by Codex (Brief 29 rejected the direct `0b650bb`→WEX swap after a source-level uniformity audit; the arithmetic projection is −17.498447%, but the accepted frontier specializes topology, derived constants and a target wire to the addend)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
-| leader spariev c96133a | 856 | 8,480,934,044 | **7,259,679,541,664** | bench commit `32b7d38`; Brief 23 read-only source/resource audit |
+| leader ArthurOstapenko f1518daf | 1,932 | 348,877,454 | **674,031,241,128** | bench commit `60ccc81`; Brief 29 read-only source/resource audit |
+| historical spariev c96133a | 856 | 8,480,934,044 | **7,259,679,541,664** | bench commit `32b7d38`; Brief 23 read-only source/resource audit |
 | historical dadon bcad5b2 | 856 | 12,747,275,522 | **10,911,667,846,832** | bench commit `7bc69a7` |
 | c13a293 + stack patch 20 | 855 | 15,351,820,448 | **13,125,806,483,040** | official benchmark accepted; 919,171,864 measurements; `stack/20-lookup-trees` |
 | frontier dadon c6a88fc | 855 | 15,365,238,944 | **13,137,279,297,120** | bench commit `c13a293`; Brief 16 base, boundary unchanged |
@@ -20,6 +21,7 @@ _Last updated: 2026-10-29 by Codex (Brief 27 proved fixed modular cofactors and 
 - The lab scaffold exists (this repo). The bench is cloned in WSL `gitzard-formal` at `~/shorecdlp`.
 - `yukon setup --track lean` completed 2026-10-29 (3,514 jobs). Bench fully built.
 - Brief 23 inspected `/home/gitzard/shorecdlp-c` at `32b7d38` read-only. Its Python exact-integer checks pass; it made no bench edit and ran no Lean build or score.
+- Brief 29 inspected `/home/gitzard/shorecdlp-c` at `60ccc81` and `/home/gitzard/research/ecdsafail-lean` at `0b650bb` read-only. The bench remains clean; the direct swap is no-go, so no Phase-B build or score ran.
 - `~/shorecdlp` is clean at HEAD `5d39a5f` (spariev `f7419f1`) for Brief 21.  The sandbox could not rewrite Git metadata, but no reset was needed because HEAD and Entrant already matched the requested commit.  Reapply patch 20 from a clean compatible leader with `BENCH=/home/gitzard/shorecdlp stack/20-lookup-trees/apply.sh`.
 - Codex sub-agents (`gpt-6.1-sol`) work via `formal-tools/codex-agent.sh`.
 
@@ -35,6 +37,18 @@ _Last updated: 2026-10-29 by Codex (Brief 27 proved fixed modular cofactors and 
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 29 closes W1 as a direct swap. The hypothetical ledger is
+  **1,627×341,786,258=556,086,241,766 (−17.498447%)**, with all scalar organizer
+  limits passing, but `0b650bb` is not uniform under WEX's field-bit holes:
+  `affineInputWith` changes recursive order/pivot, `clrDH` selects target wire
+  `kx C`, and the fast cells depend on non-exposed derived constants. An unpruned
+  package also projects to roughly 92–98 GiB replay memory, above the 78 GiB
+  gate. Reopen only with a fixed-shape classifier/pivot and protected-field fast
+  constant cells. Evidence: `docs/WEX-SWAP.md`; calculator:
+  `workspace/wex_swap.py`; LEVERS W1 updated. Bench `/home/gitzard/shorecdlp-c`
+  remains clean at `60ccc81`; no build, score, snapshot, SCOREBOARD row,
+  submission, commit or push.
 
 - Brief 27 closes the growing-coefficient/scaled-decoder blocker but stops the
   conservative route. `workspace/DivstepTight.lean` proves canonical modular

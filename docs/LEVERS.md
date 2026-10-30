@@ -17,7 +17,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 
 | # | Lever | Gain vs leader | Status | Owner / evidence |
 |---|---|---|---|---|
-| W1 | Swap in the ecdsafail-lean frontier adder `0b650bb` (1,594 Q × 2,155,232 Toffoli) for c3f340a | −17.5 % (≈5.56e11) projected | **open, top priority** | none yet. `workspace/wex_levers.py` |
+| W1 | Swap in the ecdsafail-lean frontier adder `0b650bb` (1,594 Q × 2,155,232 Toffoli) for c3f340a | arithmetic-only: **1,627 × 341,786,258 = 556,086,241,766 (−17.498447%)** | **no-go as a direct swap**; reopen only after a fixed-shape classifier/pivot and protected-field fast-constant cell | `docs/WEX-SWAP.md`; `workspace/wex_swap.py`: `affineInputWith` changes recursive order/pivot, `clrDH` selects wire `kx C`, and fast cells use non-exposed derived constants; unpruned replay projects above 78 GiB |
 | W2 | Traversal fusion (merge co-idle constant loads; 24→16) | −7 pts more | open | needs a census of the 24 load sites |
 | W3 | Measured √-split unlookup with borrowed adder workspace | −7 to −11 pts more | open | competes with W2 |
 | W4 | Track the ecdsafail-lean frontier (parametric transport) | ~0.8 % per 1 % adder Q | open | `yukon benchmark show b58da34e-017d-4c3c-b601-d31a94022fbc` |
