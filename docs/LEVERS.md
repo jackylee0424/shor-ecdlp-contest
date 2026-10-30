@@ -3,7 +3,7 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain" (updated 2026-10-29 ~17:45): leader **spariev `c96133a` (bench `32b7d38`): 856 × 8,480,934,044 = 7,259,679,541,664**: 266/208 bits with neighbour decoding (55 `wrappedShift` trials from one sample, radius 27), **29 corrected windows**, temp-AND compiler with **4-P catalyst lowering**, all-four EEA cancellation, borrowed flag. (i34-9 `03bad79` widened the lowering credit to every window Toffoli.) **Submissions on hold.** In flight: brief 22 (build the exact fast multiplier, `~/shorecdlp`). Brief 23 is complete (B7/C7a--d).
+Baseline for "gain" (re-scan 2026-10-29 ~19:30): leader **dadon `3d7ccb5` (bench `8b14475`): 856 qubits, Q×T 7,025,284,874,288** (T ≈ 8.207e9). That is −3.2 % from spariev `c96133a` (7.26e12), via ~11 promoted micro-cuts (0.1–0.8 % each) by dadon, spariev, i34-9 and akki-rock05: complete window-body lowering credit, joint remainder/endpoint-adder cancellation, EEA length-initializer predicate dedup and adjacent initializer-chain sharing, cross-interval endpoint cancellation in every remainder block, in-place square-subtract, aliased field lookups. dadon `fcde795` is validating. **Big levers ruled out by our lab:** fewer windows (14b), qubits↔T trades (18, 21), fast multiplier (22: −0.72 %), divstep inversion (26/27: best proved +48.9 %). Submissions on hold.
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
