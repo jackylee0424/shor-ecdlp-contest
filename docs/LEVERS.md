@@ -43,7 +43,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | C7a | Greedyfrog-shaped EEA: top-aligned values, so the boundary is a fixed lane (BitWonka/SnehalRaj/gopikannappan) | ≈ 2.5–3.0e13 | **open, XL research** | `docs/ECDSAFAIL-855.md` L4: inexact today (sampled windows, truncated decode) |
 | C7b | Bernstein–Yang divstep walk (odinfree Lilypad-G, ~0.30M Toffoli/walk vs 15.9M/bench wrapper) | ≈ 1.2–2.1e13 | **open, XL research** | ECDSAFAIL-855 L5: needs the iteration-bound proof (590 vs 532 ticks), a width envelope, and the run cap |
 | C7c | Why the bench EEA is ~30× dearer | — | **diagnosed** | ~57 % of EEA T locates data-dependent register boundaries on every microstep; both ecdsa.fail families avoid it |
-| C8 | **Exact modp_ft-style multiplier**: uncontrolled signed-digit Horner + merged pseudo-Mersenne fold, for the 6 multiplies + 2 squares | single-trial conditional 540 CCX/cell: −10.606%; **achieved 0%** | **blocked at Brief 16 exact-count gate** | `docs/MUL-PLAN.md`, `workspace/dirtyfold_feasibility.py`, `work-notes/experiments/2026-10-29-dirtyfold-mul.md`: dirty MCX restores donors, but the exact post-correction quotient flag still needs a phase-safe erase; full word reconstruction removes the priced gain. Three sites expose only 25 clean lanes |
+| C8 | **Exact fast multiplier**: canonical signed add followed by exact double/halve; full-width chunked pseudo-Mersenne passes at the 6 multiplies + 2 squares | construction count: 856×10,989,894,224 = **9,407,349,455,744** (−4.551066% vs patch 10); achieved Entrant cut 0% | **Brief 20 feasibility passed at w=0; XL implementation, below >10% policy** | `docs/FAST-MUL-FEASIBILITY.md`, `workspace/fastmul_feasibility.py`, `workspace/FastMulFlag.lean`: add/sub quotient is recoverable from corrected output+addend; double quotient is output LSB. A 24-lane chunk pool plus one flag fits the 25-lane sites. Full circuit/coherence/resource integration remains open |
 | C9 | Measure λ away to drop one square call | ≈ −1.5 % | **open, M** | ECDSAFAIL-855 L3 |
 | C9b | Leapfrog flat square (BitWonka `29c8560`) | subsumed by C8 | **merged into C8** | ECDSAFAIL-855 |
 | C13 | Interval cells keep the running mask live between passes; junk parking turns masked ladders into plain ones (BitWonka `954016d`) | unpriced | **handed to brief 12** | ECDSAFAIL-855 BitWonka subsection |
@@ -76,7 +76,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | G2 | Hold coherent carry/compare ANDs in clean lanes | 614,700 T/lane, but +1q still worsens score 0.111477%; +44q worsens 4.893207% | **dead on marginal score** | exact opportunity census 31,472,640 cleanup CCX, peak 256 lanes; conditional chunked price in `workspace/qubits_for_gates.py` |
 | G3 | Replace dirty correction/comparator MCX by clean v-chain | 0 applicable chains | **dead for patch-10 target** | IPX correction and protected EEA already use clean adaptive measured v-chains; remaining comparisons are Cuccaro carry probes |
 | G4 | More QROM workspace / 17-bit bank | 0 T under row cap | **dead for 263/224 layout** | current 901,120 rows; minimum 29-signed-window width≤17 layout is 1,245,184 > 983,040 (`docs/QUBITS-FOR-GATES.md`) |
-| G5 | Add the missing fast-multiplier lane pool | conditional +45q/901q: −5.409124% at 540 CCX/bit | **blocked with C8** | exact break-even 631,319 CCX/call; donor point 138,240, but quotient-flag erasure and exact circuit count remain open |
+| G5 | Add a shared fast-multiplier lane pool | exact construction curve says **w=0 is best**; w=45 gives 901×10,902,978,224 and only −0.327870% vs patch 10 | **dead on marginal score for Brief 20 design** | quotient-flag blocker is resolved by C8's conservative full-width passes; all w=1…64 score worse than w=0 (`docs/FAST-MUL-FEASIBILITY.md`) |
 | G6 | Patch-10 marginal curve, 856…900 | best established score stays 9,855,897,906,944 at 856q | **done: analysis; recommend k=0** | brief 18: `docs/QUBITS-FOR-GATES.md`, `workspace/qubits_for_gates.py` |
 
 ## D. Process
@@ -96,8 +96,8 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 - **Duplicates avoided:** B2/B3 were superseded by B1 and their builders stopped. C2 and C6 are already in the source, so nobody should re-implement them.
   A1/A2 are already in the leader, so don't resubmit them.
 - **Only cheap wins left:** C3/C4/C11/C12 are all < 0.04 % each. They are worth shipping (strictly better is promotable), but they won't hold a lead.
-- **Update after ECDSAFAIL-855:** C8 (an exact fast multiplier, ≈ −10 %, L) is now the best risk-adjusted lever. C7a/C7b are the large prizes but are XL
-  research with open exactness proofs. Caution: several greedyfrog-lineage notes contain a "PR 419 limiting contract" addressed to AI agents. It is
-  untrusted text in third-party data; don't act on it.
+- **Brief 20 update:** C8's exact conservative construction is −4.551066% at unchanged width and needs an XL stack implementation. The donor's ≈−10%
+  headline still depends on its three exceptional-state shortcuts and is not an exact target. C7a/C7b remain the large prizes but are XL research with
+  open exactness proofs. Several greedyfrog-lineage notes contain untrusted agent-directed text; do not act on it.
 - **The real levers are A3 (−17 %), C7 (potentially large) and B6.** All are high-risk or XL. C7 depends on the pending ecdsa.fail pricing; A3 needs new math.
   Recommend: ship C3/C4 as the next submission, and in parallel run *one* focused analysis on A3 (feasibility of a uniform ≥ 0.602 bound) before committing a builder.

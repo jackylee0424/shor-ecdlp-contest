@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 18 complete: no positive-qubit patch is worth building before the exact C8 multiplier exists. Concurrent Briefs 17/19 remain in flight)._
+_Last updated: 2026-10-29 by Codex (Brief 20 complete: conservative exact C8 feasibility passes at w=0, but the XL implementation projects only a 4.55% cut. Concurrent Briefs 17/19/21 remain in flight)._
 
 ## Current best
 
@@ -25,7 +25,7 @@ _Last updated: 2026-10-29 by Codex (Brief 18 complete: no positive-qubit patch i
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 20: exact fast-multiplier feasibility, quotient-flag erasure, exceptional-state repairs, and compiler-aware w=0…64 curve | `docs/FAST-MUL-FEASIBILITY.md`; `workspace/fastmul_feasibility.py`; `workspace/FastMul*.lean` |
+| Codex | 2026-10-29 | Brief 21: map ecdsa.fail/spooky low-qubit techniques onto spariev `f7419f1`, derive exact 855→~800 marginal curve, recommend stack patches; research only | `docs/FEWER-QUBITS.md`; `workspace/fewer_qubits.py` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
@@ -33,6 +33,18 @@ _Last updated: 2026-10-29 by Codex (Brief 18 complete: no positive-qubit patch i
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 20 supersedes Brief 16's exact-count blocker at the feasibility level. Canonicalise
+  the signed add before double/halve: the add/sub quotient is recoverable from the corrected
+  output and surviving addend, while the odd-modulus doubling quotient is the output LSB.
+  One flag plus a 24-lane exact chunk schedule fits all three 25-lane sites. At w=0 the
+  exact construction counts 5,390,896 CCX/window and projects
+  **856×10,989,894,224=9,407,349,455,744**, −4.551066% vs patch 10 and
+  −4.563488% vs the brief's leader. Every w=1…64 scores worse; recommend **w=0**.
+  Full implementation is XL and below the >10% policy. Evidence:
+  `docs/FAST-MUL-FEASIBILITY.md`, `workspace/fastmul_feasibility.py`,
+  `workspace/FastMulFlag.lean`; LEVERS C8/G5. Bench remained read-only; no Entrant,
+  build, score, snapshot, submission, commit or SCOREBOARD row.
 
 - Brief 18 is complete. Against projected patch 10
   **856×11,513,899,424=9,855,897,906,944**, the established at-most-qubit
