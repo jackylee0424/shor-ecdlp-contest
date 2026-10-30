@@ -13,6 +13,18 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 
 ## A. Rounds (T scales linearly with rounds)
 
+## W — levers on the WEX leader (added 2026-10-30; see `docs/WEX-GENERALIZE.md`)
+
+| # | Lever | Gain vs leader | Status | Owner / evidence |
+|---|---|---|---|---|
+| W1 | Swap in the ecdsafail-lean frontier adder `0b650bb` (1,594 Q × 2,155,232 Toffoli) for c3f340a | −17.5 % (≈5.56e11) projected | **open, top priority** | none yet. `workspace/wex_levers.py` |
+| W2 | Traversal fusion (merge co-idle constant loads; 24→16) | −7 pts more | open | needs a census of the 24 load sites |
+| W3 | Measured √-split unlookup with borrowed adder workspace | −7 to −11 pts more | open | competes with W2 |
+| W4 | Track the ecdsafail-lean frontier (parametric transport) | ~0.8 % per 1 % adder Q | open | `yukon benchmark show b58da34e-017d-4c3c-b601-d31a94022fbc` |
+| W5 | Our own Gold-derived adder (1,240–1,300 Q, uncertified) | ~−20 % Q | parked | `docs/ECDLP-AI-GOLD.md` M0–M4 |
+
+## Older levers (EEA era; moot under WEX unless noted)
+
 | # | Lever | Gain vs leader | Status | Owner / evidence |
 |---|---|---|---|---|
 | A1 | 56 → 26 rounds (fit the measurement cap) | — | **done (also by others)** | us: brief 04; `streaming26` |
