@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 23 complete: no buildable exact smaller EEA yet; v3 is the bench architecture; Bernstein--Yang is the recommended proof-first XL target)._
+_Last updated: 2026-10-29 by Codex (Brief 24 M1 stopped: exact recurrence/matrix and sharp n=8=19 kernel proof landed, but no Lean 590/724 hull certificate or scalable exact circuit)._
 
 ## Current best
 
@@ -34,6 +34,25 @@ _Last updated: 2026-10-29 by Codex (Brief 23 complete: no buildable exact smalle
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 24 stopped short of its M1 gate. `workspace/DivstepMath.lean` checks in
+  157s without native/bv evaluators: exact half-delta recurrence (`delta2=2δ`),
+  absorbing padding, odd-`f`, scaled transition matrix, terminal Bezout
+  interface, and exhaustive sharp n=8 termination at 19 steps (18 fails for
+  237/235). It also emits a literal X/CX/CCX truth-table `Straight` baseline:
+  57 wires by construction, 950,272 CCX forward and 1,900,544 with its adjoint.
+  That circuit is exponential (`2^(2n-2)(8n-6)`) and still lacks the final
+  semantic/support/scratch theorem. No 256-bit bound is Lean-certified: the
+  external 590 and later classic 724 Coq receipts finish with
+  `vm_cast_no_check`; the old 742 line remains only a sensitivity screen.
+  Conditional projections are 590: **1,302,156,761,248** (−82.063165%),
+  724: **1,343,768,422,304** (−81.489976%), and 742:
+  **1,349,358,048,416** (−81.412981%), all at the still-unproved W=340/Q=952
+  profile. Next gate: a chunked Lean-kernel convex-hull certificate feeding
+  `TerminatesBy 590`, then a sequential n=8 cell. Full verdict:
+  `docs/DIVSTEP-M1.md`; calculator: `workspace/divstep_m1.py`. No bench edits,
+  build, score, snapshot, submission, or commit. Experiment record:
+  `work-notes/experiments/2026-10-29-divstep-m1.md`.
 
 - Brief 23 is complete. The protected v3/bench wrapper is 15,910,015 raw CCX;
   the leader's 714-T/microstep cancellation makes it 15,744,775 effective CCX,
