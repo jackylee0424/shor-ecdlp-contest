@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 25 stopped at the exact rational half-delta hull witness; gcd/inverse tail and certificate-to-742 implication kernel-check)._
+_Last updated: 2026-10-29 by Codex (Brief 26 stopped before the physical `Straight` cell; exact projected recurrence, tagged replay, and conservative width envelope kernel-check)._
 
 ## Current best
 
@@ -27,7 +27,6 @@ _Last updated: 2026-10-29 by Codex (Brief 25 stopped at the exact rational half-
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 26: scalable exact parametric divstep cell/walk, small-width proofs, replay/width/count audit and 256-bit projections | `workspace/DivstepCell*.lean`; `workspace/divstep_cell.py`; `docs/DIVSTEP-CELL.md` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
@@ -35,6 +34,23 @@ _Last updated: 2026-10-29 by Codex (Brief 25 stopped at the exact rational half-
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 26 did not produce the requested scalable physical circuit. It did
+  kernel-check the exact `(b,d)` projection of `DivstepMath`, a four-way tagged
+  one-step inverse, arbitrary-N Bennett replay, and structural all-input bounds
+  `V=n+1`, `C_t=t+2`, `H_t=1+ceil(log2(2t+2))` in
+  `workspace/DivstepCellReplay.lean` (3s, warning-free). Python exhaustively
+  checks all n=8 and n=12 inputs: sharp horizons 19 and 28, respectively.
+  The conservative coefficient envelope makes the first honest replay screen
+  lose: at N=590 the raw target is
+  **4,941×5,053,990,124=24,971,765,202,684** (+243.978891%); the unproved
+  carry-MBU target is **4,941×3,974,280,684=19,636,920,859,644**
+  (+170.492943%). Both omit the data-dependent scaled-coefficient decoder and
+  are not circuit receipts. Exact blockers: literal `Straight` lowering and
+  basis theorem, phase corrections, canonical inverse decoder, and a much
+  sharper packed coefficient invariant. Full verdict: `docs/DIVSTEP-CELL.md`;
+  calculator: `workspace/divstep_cell.py`; C7b updated. No bench/Entrant/stack
+  edit, build, score, snapshot, submission, or commit.
 
 - Brief 25 did not certify an unconditional 256-bit N. It established that the
   selected recurrence is half-delta (`delta=1/2`), so the paper's classic

@@ -9,6 +9,7 @@ The recurrence, branch replay, and conservative lane inequalities mirror
 
 from dataclasses import dataclass
 from math import gcd
+import argparse
 
 
 LEADER_Q = 856
@@ -221,15 +222,37 @@ def pct(score: int) -> str:
     return f"{100 * (score - LEADER_SCORE) / LEADER_SCORE:+.9f}%"
 
 
+N12_EXHAUSTIVE_RECEIPT = {
+    "rows": 4_194_304,
+    "coprime_nonzero": 3_398_952,
+    "max_steps": 28,
+    "max_abs_value": 4_095,
+    "max_abs_coeff": 32_933,
+    "max_abs_delta2": 23,
+}
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--exhaustive-n12", action="store_true",
+        help="replay all 4,194,304 n=12 pairs (about 2.5 minutes here)",
+    )
+    args = parser.parse_args()
     small = exhaustive_small(8)
     assert small["rows"] == 16_384
     assert small["max_steps"] == 19
     print("proved-model n=8 exhaustive regression")
     for key, value in small.items():
         print(f"  {key:20s} {value:,}")
+    n12 = exhaustive_small(12) if args.exhaustive_n12 else N12_EXHAUSTIVE_RECEIPT
+    assert n12 == N12_EXHAUSTIVE_RECEIPT
+    print("n=12 exhaustive regression receipt" +
+          (" (recomputed)" if args.exhaustive_n12 else " (use --exhaustive-n12 to recompute)"))
+    for key, value in n12.items():
+        print(f"  {key:20s} {value:,}")
     print("structural envelope (Lean theorem; applies to all n=8 and n=12 inputs)")
-    for n, horizon in ((8, 19), (12, 31)):
+    for n, horizon in ((8, 19), (12, 28)):
         print(
             f"  n={n}: V={value_width(n)}, C_t=t+2 (C_N={coeff_width(horizon)}), "
             f"H_N={delta_width(horizon)} at illustrative N={horizon}"

@@ -180,6 +180,25 @@ theorem walk_f_odd {s : Core} (hf : Odd s.f) (n : Nat) :
   | zero => exact hf
   | succ n ih => exact ih (step_f_odd hf)
 
+theorem step_ticks_le (s : Core) : (step s).ticks ≤ s.ticks + 1 := by
+  by_cases hz : s.g = 0
+  · simp [step, hz]
+  by_cases he : Even s.g
+  · simp [step, hz, he]
+  by_cases hd : 0 < s.delta2
+  · simp [step, hz, he, hd]
+  · simp [step, hz, he, hd]
+
+theorem walk_ticks_le (s : Core) (n : Nat) :
+    (walk n s).ticks ≤ s.ticks + n := by
+  induction n generalizing s with
+  | zero => simp [walk]
+  | succ n ih =>
+      rw [walk]
+      have hs := step_ticks_le s
+      have hn := ih (step s)
+      omega
+
 /-! ## Conservative, fully parametric lane envelopes -/
 
 def ValueBound (M : Int) (s : Core) : Prop :=
