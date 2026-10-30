@@ -9,7 +9,7 @@ Previous baseline: leader **dadon `3d7ccb5` (bench `8b14475`): 856 qubits, Q×T 
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
-Last reviewed: 2026-10-29 by Claude Code (orchestrator).
+Last reviewed: 2026-10-30 by Codex (Brief 30 WEX trim census).
 
 ## A. Rounds (T scales linearly with rounds)
 
@@ -17,10 +17,10 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 
 | # | Lever | Gain vs leader | Status | Owner / evidence |
 |---|---|---|---|---|
-| W1 | Swap in the ecdsafail-lean frontier adder `0b650bb` (1,594 Q × 2,155,232 Toffoli) for c3f340a | arithmetic-only: **1,627 × 341,786,258 = 556,086,241,766 (−17.498447%)** | **no-go as a direct swap**; reopen only after a fixed-shape classifier/pivot and protected-field fast-constant cell | `docs/WEX-SWAP.md`; `workspace/wex_swap.py`: `affineInputWith` changes recursive order/pivot, `clrDH` selects wire `kx C`, and fast cells use non-exposed derived constants; unpruned replay projects above 78 GiB |
+| W1 | Port the WEX-compatible subset of the ecdsafail-lean `c3f340a..0b650bb` trims | **1,628 × 342,319,742 = 557,296,539,976 (−17.318886%)** arithmetic/source projection; portable adder 1,595 Q × 2,159,831 Toffoli | **censused; buildable design path, XL; direct `0b650bb` swap remains no-go** | Brief 30: 304/305 advertised wire cuts are U/H; exclude fast derived constants, input/output pivots, `kx(C)` host, fused entry and derived square offset. Build one-bank → five-trit/short kernels → fixed scratch → arithmetic trims, with pruning. `docs/WEX-TRIMS.md`; `workspace/wex_trims.py`; direct-swap blocker remains `docs/WEX-SWAP.md` |
 | W2 | Traversal fusion (merge co-idle constant loads; 24→16) | −7 pts more | open | needs a census of the 24 load sites |
 | W3 | Measured √-split unlookup with borrowed adder workspace | −7 to −11 pts more | open | competes with W2 |
-| W4 | Track the ecdsafail-lean frontier (parametric transport) | ~0.8 % per 1 % adder Q | open | `yukon benchmark show b58da34e-017d-4c3c-b601-d31a94022fbc` |
+| W4 | Track and classify the ecdsafail-lean frontier for fixed-shape transport | current U/H stack projects **−17.318886%**; later records must pass the same U/H/S/D audit | **census complete through `0b650bb`; ongoing watch** | Brief 30 classifies all 95 accepted/validated commits and identifies the portable dependency order. Refresh the census, not the whole adder: `docs/WEX-TRIMS.md`; `yukon benchmark show b58da34e-017d-4c3c-b601-d31a94022fbc` |
 | W5 | Our own Gold-derived adder (1,240–1,300 Q, uncertified) | ~−20 % Q | parked | `docs/ECDLP-AI-GOLD.md` M0–M4 |
 
 ## Older levers (EEA era; moot under WEX unless noted)

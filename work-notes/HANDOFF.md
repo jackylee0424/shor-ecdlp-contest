@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-30 by Codex (Brief 29 rejected the direct `0b650bb`→WEX swap after a source-level uniformity audit; the arithmetic projection is −17.498447%, but the accepted frontier specializes topology, derived constants and a target wire to the addend)._
+_Last updated: 2026-10-30 by Codex (Brief 30 classified all 95 accepted/validated `c3f340a..0b650bb` trims.  The best fixed-shape U/H stack projects to 1,628×342,319,742=557,296,539,976, −17.318886%; 304 of 305 adder-wire cuts are portable, but an unpruned mature package still screens above the replay-memory gate)._
 
 ## Current best
 
@@ -22,6 +22,7 @@ _Last updated: 2026-10-30 by Codex (Brief 29 rejected the direct `0b650bb`→WEX
 - `yukon setup --track lean` completed 2026-10-29 (3,514 jobs). Bench fully built.
 - Brief 23 inspected `/home/gitzard/shorecdlp-c` at `32b7d38` read-only. Its Python exact-integer checks pass; it made no bench edit and ran no Lean build or score.
 - Brief 29 inspected `/home/gitzard/shorecdlp-c` at `60ccc81` and `/home/gitzard/research/ecdsafail-lean` at `0b650bb` read-only. The bench remains clean; the direct swap is no-go, so no Phase-B build or score ran.
+- Brief 30 inspected the same WEX bench and donor range read-only. It made only lab documentation/calculator/ledger changes; both external trees remain clean and no Lean build or score ran.
 - `~/shorecdlp` is clean at HEAD `5d39a5f` (spariev `f7419f1`) for Brief 21.  The sandbox could not rewrite Git metadata, but no reset was needed because HEAD and Entrant already matched the requested commit.  Reapply patch 20 from a clean compatible leader with `BENCH=/home/gitzard/shorecdlp stack/20-lookup-trees/apply.sh`.
 - Codex sub-agents (`gpt-6.1-sol`) work via `formal-tools/codex-agent.sh`.
 
@@ -37,6 +38,20 @@ _Last updated: 2026-10-30 by Codex (Brief 29 rejected the direct `0b650bb`→WEX
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 30 reopens W1 only as a **from-`c3f340a` portable-trim build**, not as
+  a frontier swap.  All 95 accepted/validated commits are classified in
+  `docs/WEX-TRIMS.md`.  Excluding fast derived constants, the input/output
+  pivot classifiers, the `kx(C)` host, fused entry and the derived square
+  offset leaves a portable adder projection of **1,595 Q / 2,159,831
+  Toffoli / 1,505,792 measurements**.  In WEX this is
+  **1,628×342,319,742=557,296,539,976 (−17.318886%)**, above the 10% bar.
+  Recommended order: one-bank replay → five-trit/short kernels → fixed-label
+  scratch reuse → arithmetic trims → H/template rebase.  One-bank and
+  five-trit line-growth screens are 69.56/75.18 GiB, but the mature U stack is
+  83.19 GiB, so prune to ≤25–30k net new lines before replay.  Calculator:
+  `workspace/wex_trims.py`; LEVERS W1/W4 updated.  Submissions remain on hold;
+  no bench edit, build, score, snapshot, submission, commit or push occurred.
 
 - Brief 29 closes W1 as a direct swap. The hypothetical ledger is
   **1,627×341,786,258=556,086,241,766 (−17.498447%)**, with all scalar organizer
