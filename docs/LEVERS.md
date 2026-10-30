@@ -3,7 +3,7 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain" (updated 2026-10-29 17:15): leader **spariev `f7419f1` (bench `5d39a5f`): 855 × 11,512,613,384 = 9,843,284,443,320**: the temp-AND compiler on the 30-window rounded producer, with all-four EEA cancellation, measured exceptional predicates, a borrowed arithmetic flag (wire 836: 854 + 1 compiler ancilla) and sign-tail cancellation. Patch 10 (F1) is superseded. **Submissions are ON HOLD (human, 2026-10-29 17:15); focus is on trading qubits for score.** Marginal value: 1 wire ≈ 11.51e9/855 ≈ 13.46M T.
+Baseline for "gain" (updated 2026-10-29 ~17:45): leader **spariev `c96133a` (bench `32b7d38`): 856 × 8,480,934,044 = 7,259,679,541,664**: 266/208 bits with neighbour decoding (55 `wrappedShift` trials from one sample, radius 27), **29 corrected windows**, temp-AND compiler with **4-P catalyst lowering**, all-four EEA cancellation, borrowed flag. (i34-9 `03bad79` widened the lowering credit to every window Toffoli.) **Submissions on hold.** In flight: brief 22 (build the exact fast multiplier, `~/shorecdlp`), brief 23 (smaller exact EEA feasibility, read-only).
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
