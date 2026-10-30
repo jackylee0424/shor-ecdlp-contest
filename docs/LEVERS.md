@@ -3,7 +3,7 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain" (updated 2026-10-29 17:10): leader **dadon `96fdd4d` (bench `3fbf1a8`): 856 × 11,515,397,984 = 9,857,180,674,304**, i.e. the temporary-AND compiler on spariev's 30-window `c5e75ef` (the F1 merge, done by the leader). Our F1 (patch 10, base `a72f4af` = spariev `070b740`) projects 9,855,897,906,944, only 0.013 % below (spariev's extra trim). **Submission = patch 10 + patch 20 (lookup trees, brief 19 porting onto the compiler)**, per the human's brief-17 instruction.
+Baseline for "gain" (updated 2026-10-29 17:15): leader **spariev `f7419f1` (bench `5d39a5f`): 855 × 11,512,613,384 = 9,843,284,443,320**: the temp-AND compiler on the 30-window rounded producer, with all-four EEA cancellation, measured exceptional predicates, a borrowed arithmetic flag (wire 836: 854 + 1 compiler ancilla) and sign-tail cancellation. Patch 10 (F1) is superseded. **Submissions are ON HOLD (human, 2026-10-29 17:15); focus is on trading qubits for score.** Marginal value: 1 wire ≈ 11.51e9/855 ≈ 13.46M T.
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
@@ -66,7 +66,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 
 | # | Lever | Gain | Status | Owner / evidence |
 |---|---|---|---|---|
-| F1 | dadon's temporary-AND compiler applied to spariev's 30-window, all-four-cancellation entrant | now ≈ −0.013 % vs leader (the leader did the same merge on `c5e75ef`) | **in flight; base content now matches the leader** | brief 17, `stack/10-temp-and-compiler`, base `a72f4af` |
+| F1 (superseded by leader `f7419f1`) | dadon's temporary-AND compiler applied to spariev's 30-window, all-four-cancellation entrant | now ≈ −0.013 % vs leader (the leader did the same merge on `c5e75ef`) | **in flight; base content now matches the leader** | brief 17, `stack/10-temp-and-compiler`, base `a72f4af` |
 
 ## G. Spend qubits to save T (patch-10 marginal curve)
 

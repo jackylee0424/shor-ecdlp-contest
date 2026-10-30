@@ -25,6 +25,7 @@ _Last updated: 2026-10-29 by Codex (Brief 18 complete: no positive-qubit patch i
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 20: exact fast-multiplier feasibility, quotient-flag erasure, exceptional-state repairs, and compiler-aware w=0…64 curve | `docs/FAST-MUL-FEASIBILITY.md`; `workspace/fastmul_feasibility.py`; `workspace/FastMul*.lean` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
