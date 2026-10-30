@@ -1,11 +1,13 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 16 stopped at the single-trial exact-count gate; `shorecdlp-m` remains clean at `c13a293`)._
+_Last updated: 2026-10-29 by Codex (Brief 15 complete: patch 20 enabled and officially scored; patch 21 priced and parked. Concurrent Briefs 17/18 remain in flight)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
+| frontier dadon bcad5b2 | 856 | 12,747,275,522 | **10,911,667,846,832** | bench commit `7bc69a7`; current leader recorded in `docs/LEVERS.md` |
+| c13a293 + stack patch 20 | 855 | 15,351,820,448 | **13,125,806,483,040** | official benchmark accepted; 919,171,864 measurements; `stack/20-lookup-trees` |
 | frontier dadon c6a88fc | 855 | 15,365,238,944 | **13,137,279,297,120** | bench commit `c13a293`; Brief 16 base, boundary unchanged |
 | frontier ff1bf8d | 855 | 86,239,836,030 | **73,735,059,805,650** | frontier commit `93051d2`; reproduced before Brief 13 |
 | rounds6 (current bench Entrant) | 3,932 | 86,360,247,846 | **339,568,494,530,472** | official benchmark accepted, full kernel replay, 217s; `entrants/20261029-1215-rounds6` |
@@ -16,19 +18,31 @@ _Last updated: 2026-10-29 by Codex (Brief 16 stopped at the single-trial exact-c
 
 - The lab scaffold exists (this repo). The bench is cloned in WSL `gitzard-formal` at `~/shorecdlp`.
 - `yukon setup --track lean` completed 2026-10-29 (3,514 jobs). Bench fully built.
+- `~/shorecdlp` remains at HEAD `c13a293` with patch 20 applied as modifications to exactly three tracked Entrant files (`Main.lean`, `Single/Fourier.lean`, `Single/Physical.lean`); official replay accepted. Reapply from a clean leader with `BENCH=/home/gitzard/shorecdlp stack/20-lookup-trees/apply.sh`.
 - Codex sub-agents (`gpt-6.1-sol`) work via `formal-tools/codex-agent.sh`.
 
 ## In flight
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 18: map the marginal qubits-for-T curve for projected patch 10; read-only source analysis, no bench edits/builds | `docs/QUBITS-FOR-GATES.md`; `workspace/qubits_for_gates.py` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
-| Codex | 2026-10-29 | Brief 15: stack patches 20 (width-specialized 15-bit lookup trees), then 21 (one fewer right window if exact success clears 99%) on leader `c6a88fc` / bench `c13a293` | `stack/20-lookup-trees/`; `stack/21-right208/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 15 is complete. `stack/20-lookup-trees` is enabled and officially
+  accepted on `c13a293`: nine specialized 15-bit correction trees save exactly
+  13,418,496 T and 1,916,928 measurements, yielding
+  **855×15,351,820,448=13,125,806,483,040**. Clean-base apply/build/axioms/
+  boundary/score replay passed; proof and resource anchors are in its
+  `PATCH.md`. `stack/21-right208` is parked (no `ENABLED`): 208–210 physical
+  right bits fail success, while 211 bits and left262/right212 are only
+  numerically plausible and still need averaged finite-kernel Lean proofs plus
+  width-17 physical trees. Full record:
+  `work-notes/experiments/2026-10-29-precision262.md`.
 
 - Brief 16 stopped at the single-trial exact-count gate. `workspace/MulClean.lean` still
   proves 68–69 clean lanes at five calls and only 25 at three calls on `c13a293`. The

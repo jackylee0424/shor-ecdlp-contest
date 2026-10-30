@@ -3448,9 +3448,47 @@ theorem AtLeast.gate {n s e d} (g : TemplateGate n) {p : Straight n s e} (hp : A
   | literal g => cases g <;> simp_all [AtLeast, added] <;> omega
   | whenBit => exact hp
 
+theorem AtLeast.prependCompiled {n start d} (gs : Circuit)
+    (p : (count : Nat) × Straight n start (start+count)) (hp : AtLeast p.2 d) :
+    AtLeast (prependCompiled gs p).2 d := by
+  unfold prependCompiled
+  exact ((AtLeast.zero (literalProgram gs)).append hp).castCount (Nat.zero_add d)
+
+theorem zeroDivisionAllCount (n start : Nat) :
+    AtLeast (ShorECDLP.Entrant.ZeroAdaptive.zDivisionProgram n start).2 31544978 := by
+  unfold ShorECDLP.Entrant.ZeroAdaptive.zDivisionProgram
+  dsimp only
+  refine (AtLeast.appendCompiled (d := 0) (f := 31544978) _ _ (AtLeast.zero _) ?_).castCount (by omega)
+  refine AtLeast.prependCompiled _ _ ?_
+  exact (AtLeast.appendCompiled (d := 31544978) (f := 0) _ _
+    (divisionBothCount n _) (AtLeast.zero _)).castCount (by omega)
+
+theorem zeroMultiplicationAllCount (n start : Nat) :
+    AtLeast (ShorECDLP.Entrant.ZeroAdaptive.zMultiplicationProgram n start).2 31544978 := by
+  unfold ShorECDLP.Entrant.ZeroAdaptive.zMultiplicationProgram
+  dsimp only
+  refine (AtLeast.appendCompiled (d := 0) (f := 31544978) _ _ (AtLeast.zero _) ?_).castCount (by omega)
+  refine AtLeast.prependCompiled _ _ ?_
+  exact (AtLeast.appendCompiled (d := 31544978) (f := 0) _ _
+    (multiplicationBothCount n _) (AtLeast.zero _)).castCount (by omega)
+
+theorem adaptiveCoordinateAllCount (start : Nat) :
+    AtLeast (ShorECDLP.Entrant.ZeroAdaptive.adaptiveCoordinateProgram start).2 63089956 := by
+  unfold ShorECDLP.Entrant.ZeroAdaptive.adaptiveCoordinateProgram
+    ShorECDLP.Entrant.ZeroAdaptive.adaptiveCoordinateSegments
+  refine (AtLeast.sequenceCons (d := 0) (f := 63089956) _ _ (AtLeast.zero _) ?_).castCount (by omega)
+  refine (AtLeast.sequenceCons (d := 0) (f := 63089956) _ _ (AtLeast.zero _) ?_).castCount (by omega)
+  refine (AtLeast.sequenceCons (d := 31544978) (f := 31544978) _ _
+    (zeroDivisionAllCount 32768 _) ?_).castCount (by omega)
+  refine (AtLeast.sequenceCons (d := 0) (f := 31544978) _ _ (AtLeast.zero _) ?_).castCount (by omega)
+  refine (AtLeast.sequenceCons (d := 0) (f := 31544978) _ _ (AtLeast.zero _) ?_).castCount (by omega)
+  exact (AtLeast.sequenceCons (d := 31544978) (f := 0) _ _
+    (zeroMultiplicationAllCount 32768 _) (AtLeast.zero _)).castCount (by omega)
+
 theorem coreCount (start : Nat) : AtLeast (Single.Physical.core start).2 63089956 := by
   unfold Single.Physical.core Single.Physical.segments
-  exact (AtLeast.sequenceCons (d := 63089956) (f := 0) _ _ (coordinateAllCount start) (AtLeast.zero _)).castCount (by omega)
+  exact (AtLeast.sequenceCons (d := 63089956) (f := 0) _ _
+    (adaptiveCoordinateAllCount start) (AtLeast.zero _)).castCount (by omega)
 
 theorem preparedCount (start : Nat) : AtLeast (Single.Physical.prepared start).2 63089956 := by
   unfold Single.Physical.prepared

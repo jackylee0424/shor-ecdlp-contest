@@ -9,6 +9,7 @@ proofs and are labelled as such in docs/FEWER-WINDOWS.md.
 from __future__ import annotations
 
 from functools import lru_cache
+from fractions import Fraction
 from math import ceil, floor, pi, sin
 
 
@@ -19,6 +20,13 @@ QUBITS = 855
 LEADER_T = 16_901_720_498
 LEADER_SCORE = QUBITS * LEADER_T
 SUBMISSION_BAR = 13_005_873_923_211
+
+# Brief 15 base: dadon c6a88fc/c13a293 after stack patch 20.
+STACK20_T = 15_351_820_448
+STACK20_SCORE = 855 * STACK20_T
+STACK20_LEFT_ROWS = 442_368
+SIGNED_16_T = 512_157_359
+SIGNED_17_T = 515_139_247
 
 DIRECT_ROWS = 2**16
 DIRECT_T = 458_745
@@ -172,6 +180,42 @@ def average_same_any_rounding_window_pair(register_to_order_ratio: int) -> float
     return simpson(collision_mass, 0.0, 1.0, 1_000)
 
 
+def average_coarse_bin(register_to_coarse_ratio: int) -> float:
+    """Large-order diagnostic for rounding a fine QPE word to a coarse word.
+
+    A coarse bin contains ``W`` fine outcomes.  As the target phase moves
+    uniformly through that bin, sum the limiting sinc² kernel over precisely
+    the outcomes which round back to the bin.  This is not a finite-order
+    machine proof; it prices the success margin before Lean implementation.
+    """
+    W = register_to_coarse_ratio
+    assert W > 0 and W % 2 == 0
+    lo = -(W // 2)
+    hi = W // 2
+    return simpson(
+        lambda x: sum(sinc(j - x) ** 2 for j in range(lo, hi)),
+        -W / 2,
+        W / 2,
+        10_000,
+    ) / W
+
+
+def brief15_right_candidate(physical_bits: int) -> tuple[int, int, int, int]:
+    """Conditional resources for 13 right windows on top of stack patch 20.
+
+    Bits beyond 208 are supplied by replacing that many 16-bit windows by
+    specialized 17-bit windows.  Such a tree and its extra bank wire are not
+    implemented; these counts are the exact conditional resource price.
+    """
+    assert 208 <= physical_bits <= 212
+    wide = physical_bits - 208
+    rows = STACK20_LEFT_ROWS + 13 * 2**15 + wide * 2**15
+    phase_saving = 224 * 223 // 2 - physical_bits * (physical_bits - 1) // 2
+    t_model = STACK20_T - SIGNED_16_T + wide * (SIGNED_17_T - SIGNED_16_T) - phase_saving
+    qubits = 855 if wide == 0 else 856
+    return wide, rows, qubits, t_model
+
+
 def peak_average() -> float:
     return simpson(lambda x: sinc(x) ** 2, -0.5, 0.5)
 
@@ -247,6 +291,41 @@ def main() -> None:
     assert wrapped_special_t == 14_832_203_896
     assert QUBITS * wrapped_special_t == 12_681_534_331_080
     assert QUBITS * wrapped_special_t < SUBMISSION_BAR
+
+    print("\nBrief 15: one fewer right window on c13a293 + patch 20")
+    threshold = (99 / 100) / (200 / 201)
+    print(f"  required averaged right mass before negligible finite corrections: {threshold:.9f}")
+    forced_failure = Fraction(11_449, 1_128_960)
+    floor_loss = Fraction(1_153, 882 * ORDER)
+    finite_208_upper = Fraction(200, 201) * (1 - forced_failure + floor_loss)
+    print(f"  rigorous finite B=208 combined upper: {float(finite_208_upper):.12f}")
+    for bits in range(208, 213):
+        W = 2 ** (bits - 203)
+        mass = average_coarse_bin(W)
+        wide, rows, qubits, t_model = brief15_right_candidate(bits)
+        score = qubits * t_model
+        print(f"  B={bits}, W={W}: right={mass:.12f}, with-left={mass*200/201:.12f}; "
+              f"17-bit={wide}, rows={rows:,}, Q={qubits}, T={t_model:,}, QxT={score:,}, "
+              f"row-fit={rows <= ROW_CAP}")
+    assert average_coarse_bin(32) * 200 / 201 < 0.99
+    assert finite_208_upper < Fraction(99, 100)
+    assert average_coarse_bin(128) * 200 / 201 < 0.99
+    assert average_coarse_bin(256) * 200 / 201 > 0.99
+    assert brief15_right_candidate(211)[1] <= ROW_CAP
+    assert brief15_right_candidate(212)[1] > ROW_CAP
+
+    # At 212 right bits, trimming the left axis to 262 converts one 16-bit
+    # left window to 15 bits.  This saves exactly the missing 16,384 rows.
+    right_212 = average_coarse_bin(512)
+    left_262 = average_rounding_window(64)
+    _, rows_212, qubits_212, t_212 = brief15_right_candidate(212)
+    rows_262_212 = rows_212 - 2**14
+    t_262_212 = t_212 - (SIGNED_16_T - specialized_signed_t(15)) - 262
+    print(f"  B=212 with left=262: averaged union diagnostic="
+          f"{left_262 + right_212 - 1:.12f}; rows={rows_262_212:,}, "
+          f"Q={qubits_212}, T={t_262_212:,}, QxT={qubits_212*t_262_212:,}")
+    assert rows_262_212 == ROW_CAP
+    assert left_262 + right_212 - 1 > 0.99
 
 
 if __name__ == "__main__":

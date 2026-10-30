@@ -3,7 +3,7 @@
 **Rule:** before starting work on a lever, find its row here. If it is `in flight`, coordinate with the owner. If it is `done` or `dead`, don't redo it
 (read the linked evidence). Add new levers as rows; never start a brief for a lever that has no row.
 
-Baseline for "gain" (updated 2026-10-29 16:50): leader **dadon `bcad5b2` (bench `7bc69a7`): 856 × 12,747,275,522 = 10,911,667,846,832**: a verified measurement-assisted Toffoli compiler (Gidney temporary AND, 5 P instead of 7 per CCX, +1 ancilla) applied to the older 263/263, 33-window parent. The best 30-window producer is spariev `070b740` (`a72f4af`, 13,046,991,502,320). **Bar (> 10 %): < 9,820,501,062,149.**
+Baseline for "gain" (updated 2026-10-29 17:10): leader **dadon `96fdd4d` (bench `3fbf1a8`): 856 × 11,515,397,984 = 9,857,180,674,304**, i.e. the temporary-AND compiler on spariev's 30-window `c5e75ef` (the F1 merge, done by the leader). Our F1 (patch 10, base `a72f4af` = spariev `070b740`) projects 9,855,897,906,944, only 0.013 % below (spariev's extra trim). **Submission = patch 10 + patch 20 (lookup trees, brief 19 porting onto the compiler)**, per the human's brief-17 instruction.
 
 Earlier baseline (6-round streaming, 7.37e13) is history; rows below written against it are marked where it matters.
 
@@ -56,17 +56,17 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | # | Lever | Gain | Status | Owner / evidence |
 |---|---|---|---|---|
 | E1 | Asymmetric axes with `wrappedShift` | 3 windows | **done by others (correctly)** | dadon `c6a88fc`: measure 224 right bits, round to a 203-bit word (Clifford carry), so 14b's nearest-bin bottleneck (success ≈ 0.774 when measuring 203 bits directly) is avoided |
-| E1b | Right physical width 224 → 208 (13 windows) via a sharper rounding-concentration bound | ≈ −3.3 % | **in flight** | brief 15, patch `stack/21-right208` (price first: ~0.987 naive vs 0.99 needed) |
-| E2 | Averaged rounding-window lemma for `nearestPair` at 262/262 | −0.000003% from 524 phases; no window removed | **superseded by E1b on the new base** | brief 14b: projected uniform lower ≈0.993668; first repacked window cut needs 258/258, where success fails |
-| E3 | Row-optimal window re-packing under 983,040 rows | 262/262 still has 33 additions; 263/203 has 29 | **done: analysis** | exact DP/counts: `workspace/fewer_windows.py`; assignments and risks: `docs/FEWER-WINDOWS.md` |
-| E5 | Width-specialize the correction QROM instead of aliasing 15-bit windows through the 32,768-row tree | −0.158783% at 263/263; −0.176428% stacked with 262/262 | **in flight (brief 15, `stack/20-lookup-trees`); below submission policy** | exact conditional law `91·(rows−1)+85,848`; needs new trees/routes/coherence/resource facts (`docs/FEWER-WINDOWS.md`) |
+| E1b | Right physical width 224 → 208 (13 windows) via a sharper rounding-concentration bound | conditional −3.34% | **parked: 208–210 fail success; 211 is numerically plausible but unproved** | brief 15, `stack/21-right208/PATCH.md`: combined limiting masses 0.96690, 0.97987, 0.98690, 0.99069 for 208–211 bits; 211 also needs three width-17 trees and a 17th bank wire |
+| E2 | Averaged rounding-window lemma for a 262-bit left axis | enables row-tight left262/right212 re-split | **open proof dependency** | brief 15: left262/right212 fits exactly 983,040 rows and has limiting union diagnostic ≈0.994519, but both averaged finite-kernel lemmas are unproved; `work-notes/experiments/2026-10-29-precision262.md` |
+| E3 | Row-optimal window re-packing under 983,040 rows | 13-window right: 211 bits fits at 966,656 rows; right212 needs left262 and then fits exactly | **done: analysis** | exact integer pricing: `workspace/fewer_windows.py`, `stack/21-right208/src/right-window-pricing.py`; assignments and risks: `docs/FEWER-WINDOWS.md` and patch 21 note |
+| E5 | Width-specialize the correction QROM instead of aliasing 15-bit windows through the 32,768-row tree | −13,418,496 T / −0.08733% score on c13a293 | **done, enabled stack patch** | official accepted: 855×15,351,820,448=13,125,806,483,040; proofs/resources in `stack/20-lookup-trees/PATCH.md` |
 | E4 | Verified generic gate cancellation over more literal blocks | all 4 EEA occurrences done | **partly done by others** (spariev `c5e75ef`: all four EEA occurrences; still open beyond the 7 EEA literal blocks) | dadon `3e53f42` note: cancellation procedure proved correct for X/CX/CCX |
 
 ## F. Merges of public work
 
 | # | Lever | Gain | Status | Owner / evidence |
 |---|---|---|---|---|
-| F1 | dadon's temporary-AND compiler applied to spariev's 30-window, all-four-cancellation entrant | ≈ −9.6 % (≈ 9.86e12) | **in flight** | brief 17, `stack/10-temp-and-compiler`, base `a72f4af` |
+| F1 | dadon's temporary-AND compiler applied to spariev's 30-window, all-four-cancellation entrant | now ≈ −0.013 % vs leader (the leader did the same merge on `c5e75ef`) | **in flight; base content now matches the leader** | brief 17, `stack/10-temp-and-compiler`, base `a72f4af` |
 
 ## D. Process
 

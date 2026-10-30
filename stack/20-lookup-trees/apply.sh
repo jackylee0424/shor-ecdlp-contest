@@ -16,10 +16,21 @@ for target in "${targets[@]}"; do
   git -C "$BENCH" ls-files --error-unmatch "$target" >/dev/null
 done
 
-# A second application is a successful no-op.
+# A second worktree application is a successful no-op. If the reverse patch
+# applies to clean tracked files, the leader itself has absorbed the change.
 if git -C "$BENCH" apply --reverse --check "$patch_file" 2>/dev/null; then
-  echo "20-lookup-trees already applied"
-  exit 0
+  dirty=false
+  for target in "${targets[@]}"; do
+    if ! git -C "$BENCH" diff --quiet -- "$target"; then
+      dirty=true
+    fi
+  done
+  if "$dirty"; then
+    echo "20-lookup-trees already applied"
+    exit 0
+  fi
+  echo "20-lookup-trees absorbed by leader" >&2
+  exit 3
 fi
 
 # A leader with its own specialized tree has absorbed or superseded this patch.
