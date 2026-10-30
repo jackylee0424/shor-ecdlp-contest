@@ -1,12 +1,12 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 21 complete: the 855-wire EEA peak has no free owner; the only exact 854-wire fallback worsens score 32.38%. Concurrent Briefs 17/19 remain in flight)._
+_Last updated: 2026-10-29 by Codex (Brief 23 complete: no buildable exact smaller EEA yet; v3 is the bench architecture; Bernstein--Yang is the recommended proof-first XL target)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
-| leader spariev f7419f1 | 855 | 11,512,613,384 | **9,843,284,443,320** | bench commit `5d39a5f`; Brief 21 source/certificate audit |
+| leader spariev c96133a | 856 | 8,480,934,044 | **7,259,679,541,664** | bench commit `32b7d38`; Brief 23 read-only source/resource audit |
 | historical dadon bcad5b2 | 856 | 12,747,275,522 | **10,911,667,846,832** | bench commit `7bc69a7` |
 | c13a293 + stack patch 20 | 855 | 15,351,820,448 | **13,125,806,483,040** | official benchmark accepted; 919,171,864 measurements; `stack/20-lookup-trees` |
 | frontier dadon c6a88fc | 855 | 15,365,238,944 | **13,137,279,297,120** | bench commit `c13a293`; Brief 16 base, boundary unchanged |
@@ -19,6 +19,7 @@ _Last updated: 2026-10-29 by Codex (Brief 21 complete: the 855-wire EEA peak has
 
 - The lab scaffold exists (this repo). The bench is cloned in WSL `gitzard-formal` at `~/shorecdlp`.
 - `yukon setup --track lean` completed 2026-10-29 (3,514 jobs). Bench fully built.
+- Brief 23 inspected `/home/gitzard/shorecdlp-c` at `32b7d38` read-only. Its Python exact-integer checks pass; it made no bench edit and ran no Lean build or score.
 - `~/shorecdlp` is clean at HEAD `5d39a5f` (spariev `f7419f1`) for Brief 21.  The sandbox could not rewrite Git metadata, but no reset was needed because HEAD and Entrant already matched the requested commit.  Reapply patch 20 from a clean compatible leader with `BENCH=/home/gitzard/shorecdlp stack/20-lookup-trees/apply.sh`.
 - Codex sub-agents (`gpt-6.1-sol`) work via `formal-tools/codex-agent.sh`.
 
@@ -26,6 +27,7 @@ _Last updated: 2026-10-29 by Codex (Brief 21 complete: the 855-wire EEA peak has
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 22: build exact fast multiplier as stack patch 30 on leader `32b7d38`, milestone by milestone | `stack/30-fast-multiplier/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
@@ -33,6 +35,22 @@ _Last updated: 2026-10-29 by Codex (Brief 21 complete: the 855-wire EEA peak has
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 23 is complete. The protected v3/bench wrapper is 15,910,015 raw CCX;
+  the leader's 714-T/microstep cancellation makes it 15,744,775 effective CCX,
+  so 116 lowered wrappers contribute 7,305,575,600 of the leader's
+  8,480,934,044 T. V3's 835-wire/15.35M headline is not a separate challenge
+  candidate. Greedyfrog still lacks an exact inverse decoder. Removing all
+  priced B/E boundary location gives only a zero-cost floor,
+  **856×4,331,261,404=3,707,559,761,824** (−48.929429%), not a circuit.
+  Recommended next gate: a kernel-replayed 590-tick half-delta divstep bound
+  (742 fallback) plus an n=8 exact forward/reverse `Straight` circuit. The
+  conditional W=340 screen is
+  **952×1,367,811,724=1,302,156,761,248** (−82.063165%), with width/replay/count
+  explicitly unproved. Full verdict, proof route and stop ceilings:
+  `docs/SMALLER-EEA.md`; exact arithmetic: `workspace/smaller_eea.py`; LEVERS
+  B7/C7a--d. Research only: no Lean scratch, bench edit/build, score, snapshot,
+  submission or commit.
 
 - Brief 21 is complete.  At the binding EEA phase, 580 EEA roles + the 256-bit
   data bank + root 836 + infinity 838 + the 16-wire address/sign bank + compiler
