@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 15 complete: patch 20 enabled and officially scored; patch 21 priced and parked. Concurrent Briefs 17/18 remain in flight)._
+_Last updated: 2026-10-29 by Codex (Brief 18 complete: no positive-qubit patch is worth building before the exact C8 multiplier exists. Concurrent Briefs 17/19 remain in flight)._
 
 ## Current best
 
@@ -25,13 +25,24 @@ _Last updated: 2026-10-29 by Codex (Brief 15 complete: patch 20 enabled and offi
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 18: map the marginal qubits-for-T curve for projected patch 10; read-only source analysis, no bench edits/builds | `docs/QUBITS-FOR-GATES.md`; `workspace/qubits_for_gates.py` |
+| Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex (Option C) | 2026-10-29 | Brief 11: dirty-borrowed comparator only, target 3,421 qubits; separate bench `/home/gitzard/shorecdlp-c` | workspace/C_*.lean; `/home/gitzard/shorecdlp-c/…/Entrant/` if accepted |
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 18 is complete. Against projected patch 10
+  **856×11,513,899,424=9,855,897,906,944**, the established at-most-qubit
+  frontier stays at 856 qubits through a 900-qubit budget. A hypothetical held-carry
+  lane saves only 614,700 T versus 13,435,122 T required for the first extra wire;
+  +44 lanes worsen score 4.893207%. The target has no residual conditional CCX class,
+  dirty correction MCX, or row-cap-feasible 17-bit window cut. Only the blocked C8
+  multiplier pays: at 540 CCX/bit, +45 wires/901 qubits would conditionally cut score
+  5.409124%, with break-even 631,319 CCX/call. Recommendation: **build k=0** until
+  C8 has an exact circuit/count. Evidence: `docs/QUBITS-FOR-GATES.md`,
+  `workspace/qubits_for_gates.py`; LEVERS G1–G6. No bench edits or builds.
 
 - Brief 15 is complete. `stack/20-lookup-trees` is enabled and officially
   accepted on `c13a293`: nine specialized 15-bit correction trees save exactly

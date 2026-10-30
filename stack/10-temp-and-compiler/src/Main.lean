@@ -3450,8 +3450,8 @@ theorem AtLeast.gate {n s e d} (g : TemplateGate n) {p : Straight n s e} (hp : A
 
 theorem AtLeast.prependCompiled {n start d} (gs : Circuit)
     (p : (count : Nat) × Straight n start (start+count)) (hp : AtLeast p.2 d) :
-    AtLeast (prependCompiled gs p).2 d := by
-  unfold prependCompiled
+    AtLeast (ShorECDLP.Paper2607_13816.ChallengeMigration.prependCompiled gs p).2 d := by
+  unfold ShorECDLP.Paper2607_13816.ChallengeMigration.prependCompiled
   exact ((AtLeast.zero (literalProgram gs)).append hp).castCount (Nat.zero_add d)
 
 theorem zeroDivisionAllCount (n start : Nat) :

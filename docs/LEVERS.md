@@ -68,6 +68,17 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 |---|---|---|---|---|
 | F1 | dadon's temporary-AND compiler applied to spariev's 30-window, all-four-cancellation entrant | now ≈ −0.013 % vs leader (the leader did the same merge on `c5e75ef`) | **in flight; base content now matches the leader** | brief 17, `stack/10-temp-and-compiler`, base `a72f4af` |
 
+## G. Spend qubits to save T (patch-10 marginal curve)
+
+| # | Lever | Gain vs projected patch 10 | Status | Owner / evidence |
+|---|---|---|---|---|
+| G1 | Second/third temporary-AND compiler scratch | 0 T; +0.116822% score per first idle wire | **dead for current syntax** | brief 18: no reachable record-controlled or `whenBit` CCX; protected and measured-AND compute CCX remain literal and are already lowered (`docs/QUBITS-FOR-GATES.md`) |
+| G2 | Hold coherent carry/compare ANDs in clean lanes | 614,700 T/lane, but +1q still worsens score 0.111477%; +44q worsens 4.893207% | **dead on marginal score** | exact opportunity census 31,472,640 cleanup CCX, peak 256 lanes; conditional chunked price in `workspace/qubits_for_gates.py` |
+| G3 | Replace dirty correction/comparator MCX by clean v-chain | 0 applicable chains | **dead for patch-10 target** | IPX correction and protected EEA already use clean adaptive measured v-chains; remaining comparisons are Cuccaro carry probes |
+| G4 | More QROM workspace / 17-bit bank | 0 T under row cap | **dead for 263/224 layout** | current 901,120 rows; minimum 29-signed-window width≤17 layout is 1,245,184 > 983,040 (`docs/QUBITS-FOR-GATES.md`) |
+| G5 | Add the missing fast-multiplier lane pool | conditional +45q/901q: −5.409124% at 540 CCX/bit | **blocked with C8** | exact break-even 631,319 CCX/call; donor point 138,240, but quotient-flag erasure and exact circuit count remain open |
+| G6 | Patch-10 marginal curve, 856…900 | best established score stays 9,855,897,906,944 at 856q | **done: analysis; recommend k=0** | brief 18: `docs/QUBITS-FOR-GATES.md`, `workspace/qubits_for_gates.py` |
+
 ## D. Process
 
 | # | Lever | Status | Note |
