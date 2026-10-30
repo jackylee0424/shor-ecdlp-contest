@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 26 stopped before the physical `Straight` cell; exact projected recurrence, tagged replay, and conservative width envelope kernel-check)._
+_Last updated: 2026-10-29 by Codex (Brief 27 proved fixed modular cofactors and tagged replay, refuted local tag-free replay, and stopped after an unfavorable exact-model screen)._
 
 ## Current best
 
@@ -27,6 +27,7 @@ _Last updated: 2026-10-29 by Codex (Brief 26 stopped before the physical `Straig
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 28: construct and kernel-check a finite rational half-delta hull witness for the 256-bit triangle, or identify and repair the certificate interface if globally infeasible | `workspace/divstep_hull.py`; `workspace/DivstepHull*.lean`; `workspace/DivstepBound2.lean`; `docs/DIVSTEP-BOUND.md` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
@@ -34,6 +35,22 @@ _Last updated: 2026-10-29 by Codex (Brief 26 stopped before the physical `Straig
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 27 closes the growing-coefficient/scaled-decoder blocker but stops the
+  conservative route. `workspace/DivstepTight.lean` proves canonical modular
+  cofactors `0≤B,D<p`, invariants `f≡B*x`, `g≡D*x`, direct terminal inverse,
+  all-input fixed widths, modular tagged inverse, arbitrary-N replay, and n=8/
+  n=12 specializations (3s, warning-free). The exact n=256 arithmetic state is
+  **1,048 lanes** (`257+257+256+256+12+10`). A proved three-way even/swap/add
+  collision refutes every post-state-only local inverse on the general valid
+  domain; local replay needs two tag qubits/tick. Python rechecked all 16,384
+  n=8 and 4,194,304 n=12 inputs. The optimistic N=590 two-bit screen is
+  **3,018×3,582,256,364=10,811,249,706,552** (+48.921859%); an unproved parity/
+  checkpoint screen is +27.555668%, and even impossible zero history is only
+  −9.304713% before modular-half cost. Full verdict: `docs/DIVSTEP-TIGHT.md`;
+  calculator: `workspace/divstep_tight.py`; C7b updated. Reopen only with both
+  a packed physical cell and a stronger reachable-state decoder. No bench/
+  Entrant/stack edit, score, snapshot, submission, or commit.
 
 - Brief 26 did not produce the requested scalable physical circuit. It did
   kernel-check the exact `(b,d)` projection of `DivstepMath`, a four-way tagged
