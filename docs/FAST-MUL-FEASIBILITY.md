@@ -1,5 +1,17 @@
 # Fast multiplier feasibility (Brief 20)
 
+> **Brief 22 correction (2026-10-29): this feasibility verdict is superseded.**
+> The count below charges one `A(L)` pass for erasing the canonical signed-add
+> quotient, but addition and subtraction require different predicates selected
+> by a live quantum sign.  That selection is not a Clifford terminal phase and
+> is not covered by the 4-P unconditional-CCX lowering.  The direct exact
+> phase-safe fallback (conditional add/compare/unadd plus overflow cleanup)
+> projects only **856 × 8,419,666,672 = 7,207,234,671,232**, a
+> **0.722413023%** cut versus leader `32b7d38`, below Brief 22's mandatory 2%
+> gate.  See `work-notes/experiments/2026-10-29-fastmul-build.md` and
+> `workspace/fastmul_build.py`.  The 24-lane carry construction itself remains
+> valid; its checked literal count is 503 CCX, not the conservative 504 below.
+
 ## Verdict first
 
 **Feasible at `w = 0`; not yet build-ready.**  The quotient-flag obstruction from
