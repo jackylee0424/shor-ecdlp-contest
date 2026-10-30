@@ -1,12 +1,13 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 20 complete: conservative exact C8 feasibility passes at w=0, but the XL implementation projects only a 4.55% cut. Concurrent Briefs 17/19/21 remain in flight)._
+_Last updated: 2026-10-29 by Codex (Brief 21 complete: the 855-wire EEA peak has no free owner; the only exact 854-wire fallback worsens score 32.38%. Concurrent Briefs 17/19 remain in flight)._
 
 ## Current best
 
 | Candidate | Qubits | T-model | Q×T | Verified how |
 |---|---|---|---|---|
-| frontier dadon bcad5b2 | 856 | 12,747,275,522 | **10,911,667,846,832** | bench commit `7bc69a7`; current leader recorded in `docs/LEVERS.md` |
+| leader spariev f7419f1 | 855 | 11,512,613,384 | **9,843,284,443,320** | bench commit `5d39a5f`; Brief 21 source/certificate audit |
+| historical dadon bcad5b2 | 856 | 12,747,275,522 | **10,911,667,846,832** | bench commit `7bc69a7` |
 | c13a293 + stack patch 20 | 855 | 15,351,820,448 | **13,125,806,483,040** | official benchmark accepted; 919,171,864 measurements; `stack/20-lookup-trees` |
 | frontier dadon c6a88fc | 855 | 15,365,238,944 | **13,137,279,297,120** | bench commit `c13a293`; Brief 16 base, boundary unchanged |
 | frontier ff1bf8d | 855 | 86,239,836,030 | **73,735,059,805,650** | frontier commit `93051d2`; reproduced before Brief 13 |
@@ -18,14 +19,13 @@ _Last updated: 2026-10-29 by Codex (Brief 20 complete: conservative exact C8 fea
 
 - The lab scaffold exists (this repo). The bench is cloned in WSL `gitzard-formal` at `~/shorecdlp`.
 - `yukon setup --track lean` completed 2026-10-29 (3,514 jobs). Bench fully built.
-- `~/shorecdlp` remains at HEAD `c13a293` with patch 20 applied as modifications to exactly three tracked Entrant files (`Main.lean`, `Single/Fourier.lean`, `Single/Physical.lean`); official replay accepted. Reapply from a clean leader with `BENCH=/home/gitzard/shorecdlp stack/20-lookup-trees/apply.sh`.
+- `~/shorecdlp` is clean at HEAD `5d39a5f` (spariev `f7419f1`) for Brief 21.  The sandbox could not rewrite Git metadata, but no reset was needed because HEAD and Entrant already matched the requested commit.  Reapply patch 20 from a clean compatible leader with `BENCH=/home/gitzard/shorecdlp stack/20-lookup-trees/apply.sh`.
 - Codex sub-agents (`gpt-6.1-sol`) work via `formal-tools/codex-agent.sh`.
 
 ## In flight
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
-| Codex | 2026-10-29 | Brief 21: map ecdsa.fail/spooky low-qubit techniques onto spariev `f7419f1`, derive exact 855→~800 marginal curve, recommend stack patches; research only | `docs/FEWER-QUBITS.md`; `workspace/fewer_qubits.py` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
@@ -33,6 +33,18 @@ _Last updated: 2026-10-29 by Codex (Brief 20 complete: conservative exact C8 fea
 | Codex | 2026-10-29 | Brief 12: exact EEA inversion-wrapper inventory, then first exact T-cut on frontier ff1bf8d | `workspace/eea_inventory.py`; `docs/EEA-INVENTORY.md`; bench Entrant if proved |
 
 ## Next up (unclaimed)
+
+- Brief 21 is complete.  At the binding EEA phase, 580 EEA roles + the 256-bit
+  data bank + root 836 + infinity 838 + the 16-wire address/sign bank + compiler
+  ancilla 1024 occupy all 855 owners.  Apparent idle lookup/IPX roles are physical
+  EEA owners then.  The only current-source one-wire cut is the unlowered Parent:
+  **854×15,258,353,144=13,030,633,584,976**, +32.380951297%.  Any competitive
+  854-wire redesign must add at most 13,480,811 T (2,696,162 compiled 5T-CCX).
+  Existing sharing/borrowing/MBU/address reuse is already applied; packed rings,
+  spooky recomputation and v3's 835-wire layout need a new EEA and exact proof.
+  Recommendation: no stack patch.  Full lifetimes, every q=855…800 threshold and
+  technique verdict: `docs/FEWER-QUBITS.md`; calculator:
+  `workspace/fewer_qubits.py`; LEVERS B6/B8--B10.  No bench edits or builds.
 
 - Brief 20 supersedes Brief 16's exact-count blocker at the feasibility level. Canonicalise
   the signed add before double/halve: the add/sub quotient is recoverable from the corrected

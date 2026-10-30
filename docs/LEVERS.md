@@ -18,7 +18,7 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | A3 | 5 rounds: prove per-round ≥ 0.6019 (**moot**: the leader is single-trial) | −16.7 % (≈ 6.14e13) | **open, high risk** | none. Proved bounds are ~0.54–0.55 and sampled values ~0.60–0.63 (`workspace/round_mass.py`). Needs a sharper uniform analysis; the polynomial + `uv ≥ u+v−1` route caps near 0.547 |
 | A4 | Raise per-round mass by changing decoder bits (rightBits) | ~0 | **dead** | `docs/CONTRIBUTIONS-PLAN.md` §2: precision doesn't change the uniform bound |
 
-## B. Qubits (core is 855: 854 reset labels + zero-divisor flag 837)
+## B. Qubits (855 total: 854 reset labels + compiler ancilla 1024; old flag 837 is absent)
 
 | # | Lever | Gain | Status | Owner / evidence |
 |---|---|---|---|---|
@@ -28,7 +28,10 @@ Last reviewed: 2026-10-29 by Claude Code (orchestrator).
 | B4 | Spooky pebbling on the endpoint bank | — | **dead** | `docs/SPOOKY-ON-09.md` §2–3: the peak comes during compute; +38.6M T/round |
 | B5 | Spooky multiply checkpoint / EEA divide | ~0 | **dead** | the divide sets the peak; spooky R001/R005 |
 | B7 | arXiv:2607.13816 **v3** (2026-09-05): 3n+6⌊log₂n⌋+O(1) qubits, **835** for 256-bit; inversion 2n+6⌊log₂n⌋ qubits, 229n² Toffoli (≈ 15.0M, about the same as the bench's 15.9M per wrapper) | ≈ −2.3 % (qubits only) | **open, XL** | a new paper construction; the bench pins v2. It would need a fresh migration of the space-saving inversion; T gain ≈ 0 |
-| B6 | Below 855: shrink the arithmetic core (EEA/multiply workspace) | each −1 q ≈ −0.12 % | **open, XL** | the ecdsa.fail ~815–849q lineage packs a point add in ~820q; see `docs/ECDSAFAIL-855.md` (pending) |
+| B6 | Below 855: shrink the arithmetic core (EEA/multiply workspace) | each −1 q ≈ −0.12 % | **censused; open, XL** | Brief 21: every physical owner is live at the EEA peak; the ecdsa.fail 815–849q layouts are different/partly approximate algorithms, not local loans. Exact curve and technique map: `docs/FEWER-QUBITS.md` |
+| B8 | Remove the temporary-AND compiler ancilla | −1 q, but +3,745,739,760 T; score **+32.380951297%** | **dead on score; exact** | Brief 21: the 854-wire Parent is 854×15,258,353,144=13,030,633,584,976. A competitive 854 build has only +13,480,811 T of room |
+| B9 | Dynamic compiler-ancilla loan from an arithmetic owner | target −1 q; must add ≤13,480,811 T total | **blocked by census; XL** | no clean owner exists at lowered EEA CCX sites; 2,696,162 compiled CCX is the exact 5T acceptance cap. `workspace/fewer_qubits.py` |
+| B10 | Fold/recompute the address/Fourier bank or loan the repair suffix 578..579 | 0 established | **unpriced research** | bank is coherent through the binding EEA; suffix has no disjoint unique owner to replace. Per-phase lifetimes: `docs/FEWER-QUBITS.md` |
 
 ## C. T per window (arithmetic)
 
