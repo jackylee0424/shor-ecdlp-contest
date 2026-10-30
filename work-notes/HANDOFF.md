@@ -1,6 +1,6 @@
 # HANDOFF — read this first, update it last
 
-_Last updated: 2026-10-29 by Codex (Brief 24 M1 stopped: exact recurrence/matrix and sharp n=8=19 kernel proof landed, but no Lean 590/724 hull certificate or scalable exact circuit)._
+_Last updated: 2026-10-29 by Codex (Brief 25 stopped at the exact rational half-delta hull witness; gcd/inverse tail and certificate-to-742 implication kernel-check)._
 
 ## Current best
 
@@ -27,6 +27,7 @@ _Last updated: 2026-10-29 by Codex (Brief 24 M1 stopped: exact recurrence/matrix
 
 | Agent | Since | Item | Output location |
 |---|---|---|---|
+| Codex | 2026-10-29 | Brief 26: scalable exact parametric divstep cell/walk, small-width proofs, replay/width/count audit and 256-bit projections | `workspace/DivstepCell*.lean`; `workspace/divstep_cell.py`; `docs/DIVSTEP-CELL.md` |
 | Codex | 2026-10-29 | Brief 19: port patch 20 width-specialized lookup trees onto dadon's temporary-AND compiler program; validate exact compiler-aware resources on `3fbf1a8` | `stack/20-lookup-trees/`; `/home/gitzard/shorecdlp/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 17: merge dadon `bcad5b2` temporary-AND compiler onto spariev `070b740` as stack patch 10; verify and score on bench `shorecdlp-m` | `stack/10-temp-and-compiler/`; `/home/gitzard/shorecdlp-m/…/Entrant/` |
 | Codex | 2026-10-29 | Brief 10b: integrate and score conservative flag-only correction, target 855 qubits | `workspace/flag855-wip/`; `/home/gitzard/shorecdlp/…/Entrant/` |
@@ -35,24 +36,23 @@ _Last updated: 2026-10-29 by Codex (Brief 24 M1 stopped: exact recurrence/matrix
 
 ## Next up (unclaimed)
 
-- Brief 24 stopped short of its M1 gate. `workspace/DivstepMath.lean` checks in
-  157s without native/bv evaluators: exact half-delta recurrence (`delta2=2δ`),
-  absorbing padding, odd-`f`, scaled transition matrix, terminal Bezout
-  interface, and exhaustive sharp n=8 termination at 19 steps (18 fails for
-  237/235). It also emits a literal X/CX/CCX truth-table `Straight` baseline:
-  57 wires by construction, 950,272 CCX forward and 1,900,544 with its adjoint.
-  That circuit is exponential (`2^(2n-2)(8n-6)`) and still lacks the final
-  semantic/support/scratch theorem. No 256-bit bound is Lean-certified: the
-  external 590 and later classic 724 Coq receipts finish with
-  `vm_cast_no_check`; the old 742 line remains only a sensitivity screen.
-  Conditional projections are 590: **1,302,156,761,248** (−82.063165%),
-  724: **1,343,768,422,304** (−81.489976%), and 742:
-  **1,349,358,048,416** (−81.412981%), all at the still-unproved W=340/Q=952
-  profile. Next gate: a chunked Lean-kernel convex-hull certificate feeding
-  `TerminatesBy 590`, then a sequential n=8 cell. Full verdict:
-  `docs/DIVSTEP-M1.md`; calculator: `workspace/divstep_m1.py`. No bench edits,
-  build, score, snapshot, submission, or commit. Experiment record:
-  `work-notes/experiments/2026-10-29-divstep-m1.md`.
+- Brief 25 did not certify an unconditional 256-bit N. It established that the
+  selected recurrence is half-delta (`delta=1/2`), so the paper's classic
+  `delta=1` 741/742 theorem cannot simply be imported; the relevant external
+  590 Coq emptiness receipt still uses `vm_cast_no_check`.
+  `workspace/DivstepBound.lean` now kernel-checks common-divisor/gcd
+  preservation, terminal `|f|=gcd`, the scaled matrix invariant, and the
+  scaled/unscaled modular-inverse congruences. It also proves that the exact
+  proposition `Has256TrianglePotential`--a rational gauge dominating `|g|`,
+  contracting by `25/32`, and initially bounded by `4*2^256`--implies
+  half-delta termination at 742 for all odd `f0`, `0≤g0≤f0<2^256`. Check: 2s,
+  ~2.03 GB peak, axioms exactly allowed. The remaining proof gate is a concrete
+  finite rational polyhedral witness for that proposition, preferably an outer
+  approximation of the published stable hull with symbolic delta tails. Full
+  verdict: `docs/DIVSTEP-BOUND.md`; prior n=8 evidence:
+  `docs/DIVSTEP-M1.md`. Conditional 742 W=340/Q=952 screen remains
+  **1,349,358,048,416** (−81.412981%). No bench/Entrant/stack edit, score,
+  snapshot, submission, or commit.
 
 - Brief 23 is complete. The protected v3/bench wrapper is 15,910,015 raw CCX;
   the leader's 714-T/microstep cancellation makes it 15,744,775 effective CCX,
